@@ -20,6 +20,7 @@
 #include "kredentials.h"
 
 #include <qlabel.h>
+#include <qcursor.h>
 
 #include <kmainwindow.h>
 #include <klocale.h>
@@ -34,9 +35,13 @@ kredentials::kredentials()
     // set the shell's ui resource file
     //setXMLFile("kredentialsui.rc");
 
+#ifdef DEBUG
+	kdDebug() << "kredentials constructor called" << endl;
+#endif /* DEBUG */
 	menu = new QPopupMenu();
+	menu->insertItem("Renew Tickets", this, SLOT(renewTickets()), CTRL+Key_R);
 	renewAct = new KAction(i18n("&Renew credentials"), "1rightarrow", 0,
-                               this, SLOT(renewTickets()), actionCollection(), "renew")
+                               this, SLOT(renewTickets()), actionCollection(), "renew");
 
 	kerror = 0;
 	k5_opts = (k_opts*)malloc(sizeof(struct k_opts));
@@ -44,14 +49,16 @@ kredentials::kredentials()
 
 	k5 = (k5_data*)malloc(sizeof(struct k5_data));
 	memset(k5, 0, sizeof(*k5));
-	err_code = krb5_init_context(&k5->ctx);
-	if(err_code)
-		kdDebug() << "Kerberos returned " << err_code << endl;
-	err_code = krb5_cc_default(k5->ctx, &k5->cc);
-	if(err_code)
-		kdDebug() << "Kerberos returned " << err_code << endl;
+	kerror = krb5_init_context(&k5->ctx);
+	if(kerror)
+		kdDebug() << "Kerberos returned " << kerror << endl;
+	kerror = krb5_cc_default(k5->ctx, &k5->cc);
+	if(kerror)
+		kdDebug() << "Kerberos returned " << kerror << endl;
 	kdDebug() << "Set k5->cc to " << k5->cc << endl;
-
+#ifdef DEBUG
+	kdDebug() << "kredentials constructor returning" << endl;
+#endif /* DEBUG */
 }
 
 kredentials::~kredentials()
@@ -60,7 +67,7 @@ kredentials::~kredentials()
 
 void kredentials::mousePressEvent(QMouseEvent *e)
 {
-	if(event->button() == RightButton)
+	if(e->button() == RightButton)
 	{
 		menu->popup(QCursor::pos());
 	}
@@ -78,34 +85,37 @@ int kredentials::renewTickets()
 		krb5_get_init_creds_opt_init(&options);
 		memset(&my_creds, 0, sizeof(my_creds));
 
-		err_code = krb5_cc_get_principal(k5->ctx, k5->cc,
+		kerror = krb5_cc_get_principal(k5->ctx, k5->cc,
 				&k5->me);
-		if(err_code)
+		if(kerror)
 		{
-				kdDebug() << "Kerberos returned " << err_code << endl;
-				return err_code;
+				kdDebug() << "Kerberos returned " << kerror << endl;
+				return kerror;
 		}
-		err_code = krb5_get_renewed_creds(k5->ctx, &my_creds, k5->me, k5->cc,
+#ifdef DEBUG
+		kdDebug() << "Using Kerberos KRB5CCNAME of " << k5->cc << endl;
+#endif /* DEBUG */
+		kerror = krb5_get_renewed_creds(k5->ctx, &my_creds, k5->me, k5->cc,
 								k5_opts->service_name);
 
-		if(code)
+		if(kerror)
 		{
 				//err_mesg = error_message(code);
 				//kdDebug() << "Kerberos returned " << code << ": " << err_mesg << endl;
 				kdDebug() << "Kerberos returned " << code << endl;
+				return kerror;
+		}
+		kerror = krb5_cc_initialize(k5->ctx, k5->cc, k5->me);
+		if(kerror)
+		{
+				kdDebug() << "Kerberos returned " << kerror << endl;
 				return code;
 		}
-	err_code = krb5_cc_initialize(k5->ctx, k5->cc, k5->me);
-		if(err_code)
+		kerror = krb5_cc_store_cred(k5->ctx, k5->cc, &my_creds);
+		if(kerror)
 		{
-				kdDebug() << "Kerberos returned " << err_code << endl;
-				return code;
-		}
-		err_code = krb5_cc_store_cred(k5->ctx, k5->cc, &my_creds);
-		if(err_code)
-		{
-				kdDebug() << "Kerberos returned " << err_code << endl;
-				return code;
+				kdDebug() << "Kerberos returned " << kerror << endl;
+				return kerror;
 		}
 		return 0;
 

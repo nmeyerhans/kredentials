@@ -36,31 +36,19 @@ static KCmdLineOptions options[] =
 
 int main(int argc, char **argv)
 {
-    KAboutData about("kredentials", I18N_NOOP("kredentials"), version, description,
-                     KAboutData::License_Custom, "(C) 2004 Noah Meyerhans", 0, 0, "noahm@csail.mit.edu");
-    about.addAuthor( "Noah Meyerhans", 0, "noahm@csail.mit.edu" );
-    KCmdLineArgs::init(argc, argv, &about);
-    KCmdLineArgs::addCmdLineOptions( options );
-    KApplication app;
-    kredentials *mainWin = 0;
+	KAboutData about("kredentials", I18N_NOOP("kredentials"), version, description,
+					KAboutData::License_Custom, "(C) 2004 Noah Meyerhans", 0, 0, "noahm@csail.mit.edu");
+	about.addAuthor( "Noah Meyerhans", 0, "noahm@csail.mit.edu" );
+	KCmdLineArgs::init(argc, argv, &about);
+	KCmdLineArgs::addCmdLineOptions( options );
+	KApplication app;
+	kredentials *mainWin = 0;
 
-    if (app.isRestored())
-    {
-        RESTORE(kredentials);
-    }
-    else
-    {
-        // no session.. just start up normally
-        KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+	mainWin = new kredentials();
+	app.setMainWidget( mainWin );
+	mainWin->show();
 
-        /// @todo do something with the command line args here
-
-        mainWin = new kredentials();
-        app.setMainWidget( mainWin );
-        mainWin->show();
-
-        args->clear();
-    }
+	//args->clear();
 
     // mainWin has WDestructiveClose flag by default, so it will delete itself.
     return app.exec();

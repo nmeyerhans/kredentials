@@ -1,5 +1,8 @@
 /* Useful stuff pulled from the kinit source from the Kerberos distribution */
 
+#ifndef __KRB_DEFS_H
+#define __KRB_DEFS_H
+
 #include <krb5.h>
 
 typedef enum { INIT_PW, INIT_KT, RENEW, VALIDATE } action_type;
@@ -37,3 +40,5 @@ struct k5_data
     krb5_principal me;
     char* name;
 };
+
+#endif /* __KRB_DEFS_H */

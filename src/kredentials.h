@@ -52,11 +52,14 @@ public:
      */
     virtual ~kredentials();
 
+protected slots:
+	int renewTickets();
+	
 protected:
-	int  renewTickets();
-	void paintEvent(QPaintEvent *);
+	//int  renewTickets();
+	//void paintEvent(QPaintEvent *);
 	void mousePressEvent(QMouseEvent *);
-	void timerEvent(QTimerEvent *);
+	//void timerEvent(QTimerEvent *);
 
 	
 private:
