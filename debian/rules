@@ -4,9 +4,14 @@
 
 package=kredentials
 
-build:
+configure: config-stamp
+
+config-stamp:
+	./configure --prefix=/usr --disable-debug
+	touch config-stamp
+
+build: configure
 	$(checkdir)
-	
 	$(MAKE) CFLAGS="-O2 -g -Wall"
 	touch build
 
