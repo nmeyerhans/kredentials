@@ -27,8 +27,10 @@
 #include <ksystemtray.h>
 #include <qpopupmenu.h>
 #include <qtimer.h>
+#include <qevent.h>
 #include <kuser.h>
 #include <kaction.h>
+#include <kdialogbase.h>
 
 #include <krb5.h>
 
@@ -53,18 +55,20 @@ public:
 
 protected slots:
 	int renewTickets();
-	int hasCurrentTickets();
+	void hasCurrentTickets();
 	
 protected:
 	//void paintEvent(QPaintEvent *);
 	void mousePressEvent(QMouseEvent *);
 	void renewOrGetNewTicekts();
-	//void timerEvent(QTimerEvent *);
+	void timerEvent(QTimerEvent *);
 
+	KDialogBase *noAuthDlg;
 	
 private:
 	int kerror;
 	int authenticated;
+	int secondsToNextRenewal;
 	QPopupMenu *menu;
 	KUser *kerberosUser;
 	KAction *renewAct, *reInitAct, *statusAct;
@@ -73,6 +77,8 @@ private:
 	krb5_ccache cc;
 	krb5_principal me;
 	char* name;
+	void initKerberos();
+	
 };
 
 #endif // _KREDENTIALS_H_

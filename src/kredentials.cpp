@@ -21,17 +21,21 @@
 
 #include <qlabel.h>
 #include <qcursor.h>
+#include <qevent.h>
 
 #include <kapplication.h>
 #include <kmainwindow.h>
 #include <klocale.h>
 #include <kdebug.h>
 #include <kiconloader.h>
+#include <kdialogbase.h>
 
 #include <krb5.h>
 
 #include <time.h>
 #include <string.h>
+
+#define DEFAULT_RENEWAL_INTERVAL 20
 
 kredentials::kredentials()
     : KSystemTray()
@@ -42,6 +46,7 @@ kredentials::kredentials()
 #ifdef DEBUG
 	kdDebug() << "kredentials constructor called" << endl;
 #endif /* DEBUG */
+	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
 	menu = new QPopupMenu();
 	//menu->insertItem("Renew Tickets", this, SLOT(renewTickets()), CTRL+Key_R);
 	//menu->insertItem("Exit", i18n("Quit"), KApplication::kApplication(), SLOT(quit()));
@@ -53,8 +58,24 @@ kredentials::kredentials()
 	statusAct->plug(menu);
 	menu->insertItem(SmallIcon("exit"), i18n("Quit"), kapp, SLOT(quit()));
 		
-	kerror = 0;
+	initKerberos();
+	hasCurrentTickets();
+	
+	killTimers();
+	//startTimer(1000);
+#ifdef DEBUG
+	kdDebug() << "Using Kerberos KRB5CCNAME of " << cc << endl;
+	kdDebug() << "kredentials constructor returning" << endl;
+#endif /* DEBUG */
+}
 
+kredentials::~kredentials()
+{
+}
+
+void kredentials::initKerberos()
+{
+	kerror = 0;
 	kerror = krb5_init_context(&ctx);
 	if(kerror)
 		kdDebug() << "Kerberos returned " << kerror << endl;
@@ -67,19 +88,13 @@ kredentials::kredentials()
 	{
 		kdDebug() << "Kerberos returned " << kerror << endl;
 	}
-#ifdef DEBUG
-	kdDebug() << "Using Kerberos KRB5CCNAME of " << cc << endl;
-	kdDebug() << "kredentials constructor returning" << endl;
-#endif /* DEBUG */
-}
-
-kredentials::~kredentials()
-{
+	
+	return;
 }
 
 void kredentials::mousePressEvent(QMouseEvent *e)
 {
-	if(e->button() == LeftButton)
+	if(e->button() == RightButton)
 	{
 		menu->popup(QCursor::pos());
 	}
@@ -92,6 +107,10 @@ int kredentials::renewTickets()
 		krb5_get_init_creds_opt options;
 		//const char *err_mesg;
 
+		// Can't renew tickets if we don't have any to renew
+		if(!authenticated)
+			return -1;
+			
 		krb5_get_init_creds_opt_init(&options);
 		memset(&my_creds, 0, sizeof(my_creds));
 		
@@ -104,19 +123,22 @@ int kredentials::renewTickets()
 
 		if(kerror)
 		{
-				kdDebug() << "Kerberos returned " << kerror << endl;
+				kdDebug() << "Kerberos returned " << kerror << 
+					" while renewing creds" << endl;
 				return kerror;
 		}
 		kerror = krb5_cc_initialize(ctx, cc, me);
 		if(kerror)
 		{
-				kdDebug() << "Kerberos returned " << kerror << endl;
+				kdDebug() << "Kerberos returned " << kerror << 
+					" while initializing cred cache" << endl;
 				return code;
 		}
 		kerror = krb5_cc_store_cred(ctx, cc, &my_creds);
 		if(kerror)
 		{
-				kdDebug() << "Kerberos returned " << kerror << endl;
+				kdDebug() << "Kerberos returned " << kerror << 
+					" while storing credentials" << endl;
 				return kerror;
 		}
 #ifdef DEBUG
@@ -126,40 +148,46 @@ int kredentials::renewTickets()
 
 }
 
-int kredentials::hasCurrentTickets()
+void kredentials::hasCurrentTickets()
 {
 	int noTix = 1;
 	krb5_cc_cursor cur;
 	krb5_creds creds;
 	krb5_principal princ;
-	krb5_flags flags;
 	krb5_int32 now;
+	
+	// bail immediately if kerberos is not happy
+	if(kerror)
+	{
+#ifdef DEBUG
+		kdDebug() << "kredentials::hasCurrentTickets() called " << 
+			"with kerror = " << kerror << endl;
+		kdDebug() << "Trying to reinitialize kerberos..." << endl;
+#endif /* DEBUG */
+		initKerberos();
+	}
 	
 	memset(&cur, 0, sizeof(cur));
 	memset(&princ, 0, sizeof(princ));
 	
 #ifdef DEBUG
-	kdDebug() << "Called hasCurrentCredentials()" << endl;
+	kdDebug() << "Called hasCurrentTickets()" << endl;
 #endif /* DEBUG */
 
 	now = time(0);
 	
-	flags = 0;
-	kerror = krb5_cc_set_flags(ctx, cc, flags);
-	if(kerror == KRB5_FCC_NOFILE)
-	{
-		kdDebug() << "error: no credentials cache exists" << endl;
-		authenticated = 0;
-	}
-	
 	if(kerror = krb5_cc_get_principal(ctx, cc, &princ))
 	{
 		kdDebug() << "While retrieving principal name, Kerberos returned " << kerror << endl;
+		authenticated = 0;
+		return;
 	}
 	kerror = krb5_cc_start_seq_get(ctx, cc, &cur);
 	if(kerror)
 	{
 		kdDebug() << "While beginning CC iterations, kerberos returned " << kerror << endl;
+		authenticated = 0;
+		return;
 	}
 	
 	while (!(kerror = krb5_cc_next_cred(ctx, cc, &cur, &creds)))
@@ -175,9 +203,44 @@ int kredentials::hasCurrentTickets()
 	noTix == 0 ? authenticated = 1 : authenticated = 0;
 
 #ifdef DEBUG
-	kdDebug() << "hasCurrentCredentials set authenticated=" << authenticated << endl;
+	kdDebug() << "hasCurrentTickets set authenticated=" << authenticated << endl;
 #endif /* DEBUG */
 
-	return noTix;
+	return;
 }
+
+void kredentials::timerEvent(QTimerEvent *e)
+{
+#ifdef DEBUG
+	kdDebug() << "timerEvent triggered, secondsToNextRenewal == " << secondsToNextRenewal << endl;
+#endif /* DEBUG */
+	secondsToNextRenewal--;
+	if(secondsToNextRenewal < 0)
+	{
+		if(renewTickets() != 0)
+		{
+#ifdef DEBUG
+				kdDebug() << "renewTickets did not get new tickets" << endl;
+#endif /* DEBUG */
+			hasCurrentTickets();
+			if(authenticated == 0)
+			{
+				noAuthDlg = new KDialogBase(0, 0, true, "Error", 
+											KDialogBase::Ok, 
+											KDialogBase::Ok, 
+											false);
+			
+				if(noAuthDlg->exec() == QDialog::Accepted)
+				{
+					// XXX do something useful here
+					killTimers();
+					return;
+				}
+			}
+		}
+		killTimers();
+	}
+	return;
+}
+
 #include "kredentials.moc"
