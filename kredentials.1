@@ -1,0 +1,53 @@
+\"  Copyright 2004 by the Massachusetts Institute of Technology.
+\"  All Rights Reserved.
+
+\"  Permission to use, copy, modify, and distribute this software and
+\"  its documentation for any purpose and without fee is hereby
+\"  granted, provided that the above copyright notice appear in all
+\"  copies and that both that copyright notice and this permission
+\"  notice appear in supporting documentation, and that the name of
+\"  M.I.T. not be used in advertising or publicity pertaining to
+\"  distribution of the software without specific, written prior
+\"  permission.  Furthermore if you modify this software you must label
+\"  your software as modified software and not distribute it in such a
+\"  fashion that it might be confused with the original
+\"  M.I.T. software.  M.I.T. makes no representations about the
+\"  suitability of this software for any purpose.  It is provided "as
+\"  is" without express or implied warranty.
+.TH kredentials 1 2004-08-29 "CSAIL User's Guide"
+.
+.SH NAME
+kredentials \- KDE system tray applet to monitor and update authentication 
+tokens
+.
+.SH DESCRIPTION
+Kredentials monitors the state of the user's Kerberos and AFS
+authentication tokens.
+.
+It renews Kerberos tickets every hour up to the maximum renewable
+lifetime of the tickets and informs the user when the renewable
+lifetime is reached.
+.
+Each time Kerberos tickets are obtained, aklog(1) is run to obtain new
+AFS tokens.
+.
+.SH OPTIONS
+.TP
+\-i|--inform
+Inform the user via a KDE "passive dialog" each time tickets are renewed.
+.SH BUGS
+There needs to be an option to disable the running of aklog(1) in the
+event that a user is using this tool on a system that does not support
+AFS.
+.
+The user should be able to obtain new tickets directly through
+Kredentials rather than manually running kinit in a shell.
+.
+There should be more configurability.
+.
+.SH AUTHOR
+Kredentials was written by Noah Meyerhans <noahm@csail.mit.edu> for 
+The Infrastructure Group at CSAIL.  
+.
+Please report any problems to help@csail.mit.edu
+.
