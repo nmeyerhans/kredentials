@@ -32,8 +32,8 @@ static KCmdLineOptions options[] =
 {
 	{ "i", 0, 0},
 	{ "inform", "Inform the user when credentials are renewed", 0},
-	{ "n", 0, 0},
-	{ "no-aklog", "Don't run aklog to update AFS tokens when renewing Kerberos tickets", 0},
+	{ "d", 0, 0},
+	{ "disable-aklog", "Don't run aklog to update AFS tokens when renewing Kerberos tickets", 0},
 	KCmdLineLastOption
 };
 
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 	{
 		mainWin->setDoNotify(true);
 	}
-	if(args->isSet("no-aklog"))
+	if(args->isSet("disable-aklog"))
 	{
 		mainWin->setDoAklog(false);
 	}
