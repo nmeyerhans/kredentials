@@ -54,7 +54,6 @@ kredentials::kredentials( int notify, int aklog )
 
 	doNotify = notify;
 	doAklog  = aklog;
-	userNotified = false;
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
 	this->setPixmap(this->loadIcon("kredentials"));
 	menu = new QPopupMenu();
@@ -167,15 +166,13 @@ void kredentials::tryRenewTickets()
 	time_t now = time(0);
 	killTimers();
 	
-	if((tktRenewableExpirationTime == 0) && !userNotified)
+	if(tktRenewableExpirationTime == 0)
 	{
 		KMessageBox::information(0, "You do not have renewable tickets.", 0, 0);
-		userNotified = true;
 	}
-	else if((tktRenewableExpirationTime < now) && !userNotified)
+	else if(tktRenewableExpirationTime < now)
 	{
 		KMessageBox::information(0, "Your tickets have outlived their renewable lifetime and can't be renewed.", 0, 0);
-		userNotified = true;
 	}
 	else if(renewTickets() != 0)
 	{
@@ -183,16 +180,15 @@ void kredentials::tryRenewTickets()
 		LOG << "renewTickets did not get new tickets" << endl;
 
 		hasCurrentTickets();
-		if(authenticated == 0 && !userNotified)
+		if(authenticated == 0)
 		{
-			userNotified = true;
 			KMessageBox::information(0, "Your tickets have expired. Please run 'renew' in a shell.", "Kerberos", 0, 0);
 		}
 	}
 	else
 	{
 		// tickets were successfully renewed
-		userNotified = false;
+		
 	}
 	// restart the timer here, regardless of whether we currently have tickets now or not.
 	// The user may get tickets before the next timeout, and we need to be able to renew them
@@ -253,7 +249,7 @@ void kredentials::hasCurrentTickets()
 			authenticated = 0;
 			return;
 		}
-	}	
+	}
 	
 	memset(&cur, 0, sizeof(cur));
 	memset(&princ, 0, sizeof(princ));
