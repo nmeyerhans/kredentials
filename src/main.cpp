@@ -24,14 +24,17 @@
 #include <klocale.h>
 
 static const char description[] =
-I18N_NOOP("Update kerberos and AFS authentication credentials");
+    I18N_NOOP("A KDE KPart Application");
 
 static const char version[] = "0.1";
 
 static KCmdLineOptions options[] =
 {
+//    { "+[URL]", I18N_NOOP( "Document to open." ), 0 },
 	{ "i", 0, 0},
 	{ "inform", "Inform the user when credentials are renewed", 0},
+	{ "a", 0, 0},
+	{ "aklog", "Run aklog to update AFS tokens when renewing Kerberos tickets", 0},
 	KCmdLineLastOption
 };
 
@@ -49,8 +52,13 @@ int main(int argc, char **argv)
 	mainWin = new kredentials();
 	if(args->isSet("inform"))
 	{
-		mainWin->setNotify(true);
+		mainWin->setDoNotify(true);
 	}
+	if(args->isSet("aklog"))
+	{
+		mainWin->setDoAklog(true);
+	}
+	
 	app.setMainWidget( mainWin );
 	mainWin->show();
 
