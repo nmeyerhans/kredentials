@@ -1,3 +1,10 @@
+kredentials (0.7) unstable; urgency=low
+
+  * AHA!  Finally tracked down and fixed the annoying and incorrect
+    warnings about tickets expiring.
+
+ -- Noah Meyerhans <noahm@csail.mit.edu>  Mon, 24 Jan 2005 18:26:20 -0500
+
 kredentials (0.6.1) unstable; urgency=low
 
   * Enable debug output
