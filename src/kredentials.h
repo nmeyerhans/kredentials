@@ -70,6 +70,7 @@ protected:
 	KDialogBase *noAuthDlg;
 	
 private:
+	int doAklog;
 	int kerror;
 	int authenticated;
 	time_t tktExpirationTime;

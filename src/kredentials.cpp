@@ -33,8 +33,8 @@
 
 #include <krb5.h>
 
-#include <time.h>
-#include <string.h>
+#include <time.h>   /* for time() */
+#include <stdlib.h> /* for system() */
 
 #ifdef DEBUG
 #define DEFAULT_RENEWAL_INTERVAL 20
@@ -52,6 +52,7 @@ kredentials::kredentials()
 	kdDebug() << "kredentials constructor called" << endl;
 #endif /* DEBUG */
 	doNotify = 0;
+	doAklog  = 1;
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
 	this->setPixmap(this->loadIcon("panel"));
 	menu = new QPopupMenu();
@@ -155,8 +156,14 @@ int kredentials::renewTickets()
 		{
 			KPassivePopup::message("Kerberos tickets have been renewed", 0);
 		}
-		return 0;
 
+		if(doAklog)
+		{
+			int aklogResult = system("aklog");
+			if(aklogResult)
+				KMessageBox::error(0, "Unable to get new AFS tokens.", 0);
+		}
+		return 0;
 }
 
 void kredentials::hasCurrentTickets()
@@ -254,20 +261,22 @@ void kredentials::timerEvent(QTimerEvent *e)
 				KMessageBox::information(0, "Your tickets have expired. Please run 'renew' in a shell.", "Kerberos", 0, 0);
 			}
 		}
+
 		// restart the timer here, regardless of whether we currently have tickets now or not.
 		// The user may get tickets before the next timeout, and we need to be able to renew them
 		secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
 		startTimer(1000);
 	}
-	if((authenticated > 0) && 
-	((now - authenticated) < 3600) &&
-	((authenticated % 900) == 0))
+	else if(authenticated &&
+			((now - tktExpirationTime) < 3600) &&
+			((authenticated % 900) == 0))
 	{
 		// tickets expire in less than 1 hour
 		KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
 	}
 	return;
 }
+
 
 void kredentials::showTicketCache()
 {
