@@ -54,7 +54,7 @@ kredentials::kredentials()
 	doNotify = 0;
 	doAklog  = 1;  /* XXX fixme: need a command line option to toggle this */
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
-	this->setPixmap(this->loadIcon("panel"));
+	this->setPixmap(this->loadIcon("kredentials"));
 	menu = new QPopupMenu();
 	//menu->insertItem("Renew Tickets", this, SLOT(renewTickets()), CTRL+Key_R);
 	//menu->insertItem("Exit", i18n("Quit"), KApplication::kApplication(), SLOT(quit()));
