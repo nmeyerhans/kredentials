@@ -1,3 +1,10 @@
+kredentials (0.6) unstable; urgency=low
+
+  * Only warn users about non-renewable or expired tickets once.
+  * Update man page.
+
+ -- Noah Meyerhans <noahm@csail.mit.edu>  Fri, 10 Sep 2004 15:48:23 -0400
+
 kredentials (0.5) unstable; urgency=low
 
   * make aklog work
