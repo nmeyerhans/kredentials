@@ -24,14 +24,21 @@
 #include <config.h>
 #endif
 
-#include <kmainwindow.h>
+#include <ksystemtray.h>
+#include <qpopupmenu.h>
+#include <qtimer.h>
+#include <kuser.h>
+#include <kaction.h>
+
+#include "krb_defs.h"
+#include <krb5.h>
 
 /**
  * @short Application Main Window
  * @author Noah Meyerhans <noahm@csail.mit.edu>
  * @version 0.1
  */
-class kredentials : public KMainWindow
+class kredentials : public KSystemTray
 {
     Q_OBJECT
 public:
@@ -44,6 +51,21 @@ public:
      * Default Destructor
      */
     virtual ~kredentials();
+
+protected:
+	int  renewTickets();
+	void paintEvent(QPaintEvent *);
+	void mousePressEvent(QMouseEvent *);
+	void timerEvent(QTimerEvent *);
+
+	
+private:
+	int kerror;
+	QPopupMenu *menu;
+	KUser *kerberosUser;
+	struct k5_data *k5;
+	struct k_opts *k5_opts;
+	KAction *renewAct, *reInitAct;
 };
 
 #endif // _KREDENTIALS_H_
