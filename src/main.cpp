@@ -18,7 +18,7 @@
  */
 
 #include "kredentials.h"
-#include <kapplication.h>
+#include <kuniqueapplication.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
@@ -45,7 +45,14 @@ int main(int argc, char **argv)
 	KCmdLineArgs::init(argc, argv, &about);
 	KCmdLineArgs::addCmdLineOptions( options );
 	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-	KApplication app;
+
+	if (!KUniqueApplication::start()) {
+	    fprintf(stderr, "Kredentials is already running!\n");
+	    exit(0);
+	}
+	KUniqueApplication app;
+	app.disableSessionManagement();
+
 	kredentials *mainWin = 0;
 
 	mainWin = new kredentials();
