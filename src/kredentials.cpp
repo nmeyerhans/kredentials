@@ -63,7 +63,7 @@ kredentials::kredentials()
 	hasCurrentTickets();
 	
 	killTimers();
-	//startTimer(1000);
+	startTimer(1000);
 #ifdef DEBUG
 	kdDebug() << "Using Kerberos KRB5CCNAME of " << cc << endl;
 	kdDebug() << "kredentials constructor returning" << endl;
@@ -157,7 +157,9 @@ void kredentials::hasCurrentTickets()
 	krb5_principal princ;
 	krb5_int32 now;
 	
-	// bail immediately if kerberos is not happy
+	/* if kerberos is not currently happy, try reinitializing.  The user may 
+	   have obtained new tickets since we last initialized.
+	*/
 	if(kerror)
 	{
 #ifdef DEBUG
@@ -166,6 +168,13 @@ void kredentials::hasCurrentTickets()
 		kdDebug() << "Trying to reinitialize kerberos..." << endl;
 #endif /* DEBUG */
 		initKerberos();
+		if(kerror)
+		{
+			/* If kerberos is still unhappy, we are not authenticated and can
+			   return now. */
+			authenticated = 0;
+			return;
+		}
 	}
 	
 	memset(&cur, 0, sizeof(cur));
@@ -218,6 +227,7 @@ void kredentials::timerEvent(QTimerEvent *e)
 	secondsToNextRenewal--;
 	if(secondsToNextRenewal < 0)
 	{
+		killTimers();
 		if(renewTickets() != 0)
 		{
 #ifdef DEBUG
@@ -234,12 +244,11 @@ void kredentials::timerEvent(QTimerEvent *e)
 				if(noAuthDlg->exec() == QDialog::Accepted)
 				{
 					// XXX do something useful here
-					killTimers();
+					kdDebug() << "Hmph" << endl;
 					return;
 				}
 			}
 		}
-		killTimers();
 	}
 	return;
 }
