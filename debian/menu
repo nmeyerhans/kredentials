@@ -1,0 +1,2 @@
+?package(kredentials):needs=X11 section=Apps/System\
+  title="kredentials" command="/usr/bin/kredentials"
