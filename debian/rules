@@ -17,7 +17,7 @@ build: configure
 
 clean:
 	$(checkdir)
-	rm -f build
+	rm -f build config-stamp
 	-$(MAKE) dist-clean
 	rm -f `find . -name "*~"`
 	rm -rf debian/tmp debian/files* core debian/substvars
