@@ -48,13 +48,15 @@ public:
     /**
      * Default Constructor
      */
-    kredentials();
-
+    //kredentials();
+	kredentials( int doNotify=0, int doAklog=1 );
+	
     /**
      * Default Destructor
      */
     virtual ~kredentials();
-	void setNotify(int);
+	void setDoNotify(int);
+	void setDoAklog(int);
 	
 protected slots:
 	int renewTickets();
@@ -88,6 +90,8 @@ private:
 	void initKerberos();
 	
 	int doNotify;
+	int doAklog;
+
 };
 
 #endif // _KREDENTIALS_H_
