@@ -28,6 +28,7 @@
 #include <qpopupmenu.h>
 #include <qtimer.h>
 #include <qevent.h>
+#include <qpixmap.h>
 #include <kuser.h>
 #include <kaction.h>
 #include <kdialogbase.h>
@@ -72,6 +73,7 @@ private:
 	QPopupMenu *menu;
 	KUser *kerberosUser;
 	KAction *renewAct, *reInitAct, *statusAct;
+	QPixmap panelIcon;
 	
 	krb5_context ctx;
 	krb5_ccache cc;

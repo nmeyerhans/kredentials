@@ -47,6 +47,7 @@ kredentials::kredentials()
 	kdDebug() << "kredentials constructor called" << endl;
 #endif /* DEBUG */
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
+	this->setPixmap(this->loadIcon("panel"));
 	menu = new QPopupMenu();
 	//menu->insertItem("Renew Tickets", this, SLOT(renewTickets()), CTRL+Key_R);
 	//menu->insertItem("Exit", i18n("Quit"), KApplication::kApplication(), SLOT(quit()));
