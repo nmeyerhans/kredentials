@@ -7,7 +7,7 @@ package=kredentials
 configure: config-stamp
 
 config-stamp:
-	./configure --prefix=/usr --disable-debug
+	./configure --prefix=/usr --disable-debug --disable-rpath
 	touch config-stamp
 
 build: configure
