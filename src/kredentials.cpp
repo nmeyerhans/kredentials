@@ -60,7 +60,7 @@ kredentials::kredentials()
                                this, SLOT(renewTickets()), actionCollection(), "renew");
 	
 	renewAct->plug(menu);
-	statusAct = new KAction(i18n("&Credential Status"), "", 0, this, SLOT(hasCurrentTickets()), actionCollection(), "status");
+	statusAct = new KAction(i18n("&Credential Status"), "", 0, this, SLOT(showTicketCache()), actionCollection(), "status");
 	statusAct->plug(menu);
 	menu->insertItem(SmallIcon("exit"), i18n("Quit"), kapp, SLOT(quit()));
 		
@@ -156,8 +156,7 @@ int kredentials::renewTickets()
 
 void kredentials::hasCurrentTickets()
 {
-	//int noTix = 1;
-	int tktLifetimeRemaining = 0;
+	int noTix = 1;
 	krb5_cc_cursor cur;
 	krb5_creds creds;
 	krb5_principal princ;
@@ -208,15 +207,19 @@ void kredentials::hasCurrentTickets()
 	
 	while (!(kerror = krb5_cc_next_cred(ctx, cc, &cur, &creds)))
 	{
-		if ((tktLifetimeRemaining == 0) && creds.server->length == 2 &&
+		if (noTix && creds.server->length == 2 &&
 			strcmp(creds.server->realm.data, princ->realm.data) == 0 &&
 			strcmp((char *)creds.server->data[0].data, "krbtgt") == 0 &&
 			strcmp((char *)creds.server->data[1].data,
 			princ->realm.data) == 0 &&
 			creds.times.endtime > now)
-				tktLifetimeRemaining = creds.times.endtime;
+		{
+			noTix = 0;
+			tktExpirationTime = creds.times.endtime;
+			tktRenewableExpirationTime = creds.times.renew_till;
+		}
 	}
-	authenticated = tktLifetimeRemaining;
+	noTix == 0 ? authenticated = 1 : authenticated = 0;
 
 #ifdef DEBUG
 	kdDebug() << "hasCurrentTickets set authenticated=" << authenticated << endl;
@@ -235,7 +238,7 @@ void kredentials::timerEvent(QTimerEvent *e)
 	if(secondsToNextRenewal < 0)
 	{
 		killTimers();
-		if(renewTickets() != 0)
+		if((tktRenewableExpirationTime < now) || (renewTickets() != 0))
 		{
 #ifdef DEBUG
 				kdDebug() << "renewTickets did not get new tickets" << endl;
@@ -257,6 +260,31 @@ void kredentials::timerEvent(QTimerEvent *e)
 	{
 		// tickets expire in less than 1 hour
 		KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
+	}
+	return;
+}
+
+void kredentials::showTicketCache()
+{
+	hasCurrentTickets();
+	QString msgString;
+	
+	if(!authenticated)
+	{
+		KMessageBox::information(0, "You do not have any valid tickets.", "Kerberos", 0, 0);
+	}
+	else
+	{
+		msgString = QString("Your tickets are valid until ") + QString(ctime(&tktExpirationTime));
+		if(tktRenewableExpirationTime > time(0))
+		{
+			msgString += QString("\nRenewable until ") + QString(ctime(&tktRenewableExpirationTime));
+		}
+		else
+		{
+			msgString += QString("\nTickets are not renewable");
+		}
+		KMessageBox::information(0, msgString, "Kerberos", 0, 0);
 	}
 	return;
 }
