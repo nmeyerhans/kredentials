@@ -58,6 +58,7 @@ public:
 	
 protected slots:
 	int renewTickets();
+	void tryRenewTickets();
 	void hasCurrentTickets();
 	void showTicketCache();
 	
@@ -70,7 +71,6 @@ protected:
 	KDialogBase *noAuthDlg;
 	
 private:
-	int doAklog;
 	int kerror;
 	int authenticated;
 	time_t tktExpirationTime;
