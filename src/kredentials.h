@@ -33,6 +33,7 @@
 #include <kaction.h>
 #include <kdialogbase.h>
 
+#include <time.h>
 #include <krb5.h>
 
 /**
@@ -57,6 +58,7 @@ public:
 protected slots:
 	int renewTickets();
 	void hasCurrentTickets();
+	void showTicketCache();
 	
 protected:
 	//void paintEvent(QPaintEvent *);
@@ -69,6 +71,8 @@ protected:
 private:
 	int kerror;
 	int authenticated;
+	time_t tktExpirationTime;
+	time_t tktRenewableExpirationTime;
 	int secondsToNextRenewal;
 	QPopupMenu *menu;
 	KUser *kerberosUser;
