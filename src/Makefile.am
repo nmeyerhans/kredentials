@@ -2,7 +2,7 @@
 INCLUDES = $(all_includes)
 
 # these are the headers for your project
-noinst_HEADERS = kredentials.h krb_defs.h
+noinst_HEADERS = kredentials.h
 
 # let automoc handle all of the meta source files (moc)
 METASOURCES = AUTO
