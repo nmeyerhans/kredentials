@@ -173,6 +173,9 @@ void kredentials::tryRenewTickets()
 	else if(tktRenewableExpirationTime < now)
 	{
 		KMessageBox::information(0, "Your tickets have outlived their renewable lifetime and can't be renewed.", 0, 0);
+		kdDebug() << "tktRenewableExpirationTime has passed: ";
+		kdDebug() << "tktRenewableExpirationTime = " << 
+		    tktRenewableExpirationTime << ", now = " << now << endl;
 	}
 	else if(renewTickets() != 0)
 	{
