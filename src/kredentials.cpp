@@ -52,7 +52,7 @@ kredentials::kredentials()
 	kdDebug() << "kredentials constructor called" << endl;
 #endif /* DEBUG */
 	doNotify = 0;
-	doAklog  = 1;
+	doAklog  = 1;  /* XXX fixme: need a command line option to toggle this */
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
 	this->setPixmap(this->loadIcon("panel"));
 	menu = new QPopupMenu();
