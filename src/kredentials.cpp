@@ -38,20 +38,22 @@
 
 #ifdef DEBUG
 #define DEFAULT_RENEWAL_INTERVAL 20
+#define LOG kdDebug()
 #else
 #define DEFAULT_RENEWAL_INTERVAL 3600
+#define LOG kndDebug()
 #endif /*DEBUG*/
 
-kredentials::kredentials()
+kredentials::kredentials( int notify, int aklog )
     : KSystemTray()
 {
     // set the shell's ui resource file
     //setXMLFile("kredentialsui.rc");
 
-#ifdef DEBUG
-	kdDebug() << "kredentials constructor called" << endl;
-#endif /* DEBUG */
-	doNotify = 0;
+	LOG << "kredentials constructor called" << endl;
+
+	doNotify = notify;
+	doAklog  = aklog;
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
 	this->setPixmap(this->loadIcon("panel"));
 	menu = new QPopupMenu();
@@ -70,10 +72,10 @@ kredentials::kredentials()
 	
 	killTimers();
 	startTimer(1000);
-#ifdef DEBUG
-	kdDebug() << "Using Kerberos KRB5CCNAME of " << krb5_cc_get_name(ctx, cc) << endl;
-	kdDebug() << "kredentials constructor returning" << endl;
-#endif /* DEBUG */
+
+	LOG << "Using Kerberos KRB5CCNAME of " << krb5_cc_get_name(ctx, cc) << endl;
+	LOG << "kredentials constructor returning" << endl;
+
 }
 
 kredentials::~kredentials()
@@ -121,9 +123,9 @@ int kredentials::renewTickets()
 	krb5_get_init_creds_opt_init(&options);
 	memset(&my_creds, 0, sizeof(my_creds));
 		
-#ifdef DEBUG
-	kdDebug() << "renewing tickets for " << me->data->data << "@" << me->realm.data << endl;
-#endif /* DEBUG */
+
+	LOG << "renewing tickets for " << me->data->data << "@" << me->realm.data << endl;
+
 
 	kerror = krb5_get_renewed_creds(ctx, &my_creds, me, cc,
 							NULL);
@@ -148,9 +150,9 @@ int kredentials::renewTickets()
 			" while storing credentials" << endl;
 		return kerror;
 	}
-#ifdef DEBUG
-	kdDebug() << "Successfully renewed tickets" << endl;
-#endif
+
+	LOG << "Successfully renewed tickets" << endl;
+
 	if(doNotify)
 	{
 		KPassivePopup::message("Kerberos tickets have been renewed", 0);
@@ -174,27 +176,50 @@ void kredentials::tryRenewTickets()
 	}
 	else if(renewTickets() != 0)
 	{
-#ifdef DEBUG
-		kdDebug() << "renewTickets did not get new tickets" << endl;
-#endif /* DEBUG */
+
+		LOG << "renewTickets did not get new tickets" << endl;
+
 		hasCurrentTickets();
 		if(authenticated == 0)
 		{
 			KMessageBox::information(0, "Your tickets have expired. Please run 'renew' in a shell.", "Kerberos", 0, 0);
 		}
 	}
+	else
+	{
+		// tickets were successfully renewed
+		
+	}
 	// restart the timer here, regardless of whether we currently have tickets now or not.
 	// The user may get tickets before the next timeout, and we need to be able to renew them
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
 	startTimer(1000);
-	if((authenticated > 0) && 
-	((tktRenewableExpirationTime - now) < 3600) &&
-	((now % 900) == 0))
+	if(authenticated > 0)
 	{
-		// tickets expire in less than 1 hour
-		KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
+		if(doAklog)
+		{
+			LOG << "Calling aklog" << endl;
+			int ret = system("aklog");
+			if( ret == -1 )
+			{
+				KMessageBox::sorry(0, "Unable to run aklog", 0, 0);
+			}
+			else if( ret )
+			{
+				KMessageBox::sorry(0, "aklog failed to obtain new AFS tokens.", 0, 0);
+			}
+		}
+		
+		if((tktRenewableExpirationTime - now) < 3600 &&
+		((now % 900) == 0))
+		{
+			// tickets expire in less than 1 hour
+			KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
+		}
 	}
+	return;
 }
+
 
 void kredentials::hasCurrentTickets()
 {
@@ -205,19 +230,17 @@ void kredentials::hasCurrentTickets()
 	krb5_int32 now;
 	
 		
-#ifdef DEBUG
-	kdDebug() << "Called hasCurrentTickets()" << endl;
-#endif /* DEBUG */
+	LOG << "Called hasCurrentTickets()" << endl;
 
 	/* if kerberos is not currently happy, try reinitializing.  The user may 
 	   have obtained new tickets since we last initialized.
 	*/
 	if(kerror)
 	{
-#ifdef DEBUG
-		kdDebug() << "hasCurrentTickets(): kerror = " << kerror << endl;
-		kdDebug() << "Trying to reinitialize kerberos..." << endl;
-#endif /* DEBUG */
+
+		LOG << "hasCurrentTickets(): kerror = " << kerror << endl;
+		LOG << "Trying to reinitialize kerberos..." << endl;
+
 		initKerberos();
 		if(kerror)
 		{
@@ -263,18 +286,18 @@ void kredentials::hasCurrentTickets()
 	}
 	noTix == 0 ? authenticated = 1 : authenticated = 0;
 
-#ifdef DEBUG
-	kdDebug() << "hasCurrentTickets set authenticated=" << authenticated << endl;
-#endif /* DEBUG */
+
+	LOG << "hasCurrentTickets set authenticated=" << authenticated << endl;
+
 
 	return;
 }
 
 void kredentials::timerEvent(QTimerEvent *e)
 {
-#ifdef DEBUG
-	kdDebug() << "timerEvent triggered, secondsToNextRenewal == " << secondsToNextRenewal << endl;
-#endif /* DEBUG */
+
+	LOG << "timerEvent triggered, secondsToNextRenewal == " << secondsToNextRenewal << endl;
+
 	secondsToNextRenewal--;
 	if(secondsToNextRenewal < 0)
 	{
@@ -308,9 +331,14 @@ void kredentials::showTicketCache()
 	return;
 }
 
-void kredentials::setNotify(int state)
+void kredentials::setDoNotify(int state)
 {
 	doNotify = state;
+}
+
+void kredentials::setDoAklog(int state)
+{
+	doAklog = state;
 }
 
 #include "kredentials.moc"
