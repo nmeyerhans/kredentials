@@ -1,3 +1,11 @@
+kredentials (0.5) unstable; urgency=low
+
+  * make aklog work
+  * provide a man page
+  * clean up some messy logic
+
+ -- Noah Meyerhans <noahm@csail.mit.edu>  Fri,  3 Sep 2004 12:10:01 -0400
+
 kredentials (0.1) unstable; urgency=low
 
   * Initial release.
