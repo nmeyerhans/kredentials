@@ -165,7 +165,9 @@ void kredentials::tryRenewTickets()
 {
 	time_t now = time(0);
 	killTimers();
-	
+
+	hasCurrentTickets();
+
 	if(tktRenewableExpirationTime == 0)
 	{
 		KMessageBox::information(0, "You do not have renewable tickets.", 0, 0);
