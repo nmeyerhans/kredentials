@@ -45,7 +45,9 @@ kredentials::kredentials()
 
 	kerror = 0;
 	k5_opts = (k_opts*)malloc(sizeof(struct k_opts));
-		k5_opts->action = INIT_PW;
+	memset(k5_opts, 0, sizeof(*k5_opts);
+	
+	k5_opts->action = INIT_PW;
 
 	k5 = (k5_data*)malloc(sizeof(struct k5_data));
 	memset(k5, 0, sizeof(*k5));
