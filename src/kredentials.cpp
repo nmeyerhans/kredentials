@@ -28,14 +28,19 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <kiconloader.h>
-#include <kdialogbase.h>
+#include <kmessagebox.h>
+#include <kpassivepopup.h>
 
 #include <krb5.h>
 
 #include <time.h>
 #include <string.h>
 
+#ifdef DEBUG
 #define DEFAULT_RENEWAL_INTERVAL 20
+#else
+#define DEFAULT_RENEWAL_INTERVAL 3600
+#endif /*DEBUG*/
 
 kredentials::kredentials()
     : KSystemTray()
@@ -65,7 +70,7 @@ kredentials::kredentials()
 	killTimers();
 	startTimer(1000);
 #ifdef DEBUG
-	kdDebug() << "Using Kerberos KRB5CCNAME of " << cc << endl;
+	kdDebug() << "Using Kerberos KRB5CCNAME of " << krb5_cc_get_name(ctx, cc) << endl;
 	kdDebug() << "kredentials constructor returning" << endl;
 #endif /* DEBUG */
 }
@@ -83,7 +88,7 @@ void kredentials::initKerberos()
 	kerror = krb5_cc_default(ctx, &cc);
 	if(kerror)
 		kdDebug() << "Kerberos returned " << kerror << endl;
-	kdDebug() << "Set cc to " << cc << endl;
+	kdDebug() << "Set cc to " << krb5_cc_get_name(ctx, cc) << endl;
 	kerror = krb5_cc_get_principal(ctx, cc, &me);
 	if(kerror)
 	{
@@ -151,20 +156,25 @@ int kredentials::renewTickets()
 
 void kredentials::hasCurrentTickets()
 {
-	int noTix = 1;
+	//int noTix = 1;
+	int tktLifetimeRemaining = 0;
 	krb5_cc_cursor cur;
 	krb5_creds creds;
 	krb5_principal princ;
 	krb5_int32 now;
 	
+		
+#ifdef DEBUG
+	kdDebug() << "Called hasCurrentTickets()" << endl;
+#endif /* DEBUG */
+
 	/* if kerberos is not currently happy, try reinitializing.  The user may 
 	   have obtained new tickets since we last initialized.
 	*/
 	if(kerror)
 	{
 #ifdef DEBUG
-		kdDebug() << "kredentials::hasCurrentTickets() called " << 
-			"with kerror = " << kerror << endl;
+		kdDebug() << "hasCurrentTickets(): kerror = " << kerror << endl;
 		kdDebug() << "Trying to reinitialize kerberos..." << endl;
 #endif /* DEBUG */
 		initKerberos();
@@ -179,10 +189,6 @@ void kredentials::hasCurrentTickets()
 	
 	memset(&cur, 0, sizeof(cur));
 	memset(&princ, 0, sizeof(princ));
-	
-#ifdef DEBUG
-	kdDebug() << "Called hasCurrentTickets()" << endl;
-#endif /* DEBUG */
 
 	now = time(0);
 	
@@ -202,15 +208,15 @@ void kredentials::hasCurrentTickets()
 	
 	while (!(kerror = krb5_cc_next_cred(ctx, cc, &cur, &creds)))
 	{
-		if (noTix && creds.server->length == 2 &&
+		if ((tktLifetimeRemaining == 0) && creds.server->length == 2 &&
 			strcmp(creds.server->realm.data, princ->realm.data) == 0 &&
 			strcmp((char *)creds.server->data[0].data, "krbtgt") == 0 &&
 			strcmp((char *)creds.server->data[1].data,
 			princ->realm.data) == 0 &&
 			creds.times.endtime > now)
-				noTix = 0;
+				tktLifetimeRemaining = creds.times.endtime;
 	}
-	noTix == 0 ? authenticated = 1 : authenticated = 0;
+	authenticated = tktLifetimeRemaining;
 
 #ifdef DEBUG
 	kdDebug() << "hasCurrentTickets set authenticated=" << authenticated << endl;
@@ -224,6 +230,7 @@ void kredentials::timerEvent(QTimerEvent *e)
 #ifdef DEBUG
 	kdDebug() << "timerEvent triggered, secondsToNextRenewal == " << secondsToNextRenewal << endl;
 #endif /* DEBUG */
+	time_t now = time(0);
 	secondsToNextRenewal--;
 	if(secondsToNextRenewal < 0)
 	{
@@ -236,19 +243,20 @@ void kredentials::timerEvent(QTimerEvent *e)
 			hasCurrentTickets();
 			if(authenticated == 0)
 			{
-				noAuthDlg = new KDialogBase(0, 0, true, "Error", 
-											KDialogBase::Ok, 
-											KDialogBase::Ok, 
-											false);
-			
-				if(noAuthDlg->exec() == QDialog::Accepted)
-				{
-					// XXX do something useful here
-					kdDebug() << "Hmph" << endl;
-					return;
-				}
+				KMessageBox::information(0, "Your tickets have expired. Please run 'renew' in a shell.", "Kerberos", 0, 0);
 			}
 		}
+		// restart the timer here, regardless of whether we currently have tickets now or not.
+		// The user may get tickets before the next timeout, and we need to be able to renew them
+		secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
+		startTimer(1000);
+	}
+	if((authenticated > 0) && 
+	((now - authenticated) < 3600) &&
+	((authenticated % 900) == 0))
+	{
+		// tickets expire in less than 1 hour
+		KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
 	}
 	return;
 }
