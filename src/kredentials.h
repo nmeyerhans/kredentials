@@ -91,6 +91,8 @@ private:
 	
 	int doNotify;
 	int doAklog;
+	
+	bool userNotified;
 
 };
 
