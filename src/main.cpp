@@ -24,13 +24,12 @@
 #include <klocale.h>
 
 static const char description[] =
-    I18N_NOOP("A KDE KPart Application");
+    I18N_NOOP("Monitor and update authentication tokens");
 
 static const char version[] = "0.5";
 
 static KCmdLineOptions options[] =
 {
-//    { "+[URL]", I18N_NOOP( "Document to open." ), 0 },
 	{ "i", 0, 0},
 	{ "inform", "Inform the user when credentials are renewed", 0},
 	{ "n", 0, 0},
