@@ -33,8 +33,8 @@
 
 #include <krb5.h>
 
-#include <time.h>   /* for time() */
-#include <stdlib.h> /* for system() */
+#include <time.h>
+#include <string.h>
 
 #ifdef DEBUG
 #define DEFAULT_RENEWAL_INTERVAL 20
@@ -52,14 +52,13 @@ kredentials::kredentials()
 	kdDebug() << "kredentials constructor called" << endl;
 #endif /* DEBUG */
 	doNotify = 0;
-	doAklog  = 1;  /* XXX fixme: need a command line option to toggle this */
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
-	this->setPixmap(this->loadIcon("kredentials"));
+	this->setPixmap(this->loadIcon("panel"));
 	menu = new QPopupMenu();
 	//menu->insertItem("Renew Tickets", this, SLOT(renewTickets()), CTRL+Key_R);
 	//menu->insertItem("Exit", i18n("Quit"), KApplication::kApplication(), SLOT(quit()));
 	renewAct = new KAction(i18n("&Renew credentials"), "1rightarrow", 0,
-                               this, SLOT(renewTickets()), actionCollection(), "renew");
+                               this, SLOT(tryRenewTickets()), actionCollection(), "renew");
 	
 	renewAct->plug(menu);
 	statusAct = new KAction(i18n("&Credential Status"), "", 0, this, SLOT(showTicketCache()), actionCollection(), "status");
@@ -110,60 +109,91 @@ void kredentials::mousePressEvent(QMouseEvent *e)
 
 int kredentials::renewTickets()
 {
-		krb5_creds my_creds;
-		krb5_error_code code = 0;
-		krb5_get_init_creds_opt options;
-		//const char *err_mesg;
+	krb5_creds my_creds;
+	krb5_error_code code = 0;
+	krb5_get_init_creds_opt options;
+	//const char *err_mesg;
 
-		// Can't renew tickets if we don't have any to renew
-		if(!authenticated)
-			return -1;
-			
-		krb5_get_init_creds_opt_init(&options);
-		memset(&my_creds, 0, sizeof(my_creds));
+	// Can't renew tickets if we don't have any to renew
+	if(!authenticated)
+		return -1;
+		
+	krb5_get_init_creds_opt_init(&options);
+	memset(&my_creds, 0, sizeof(my_creds));
 		
 #ifdef DEBUG
-		kdDebug() << "renewing tickets for " << me->data->data << "@" << me->realm.data << endl;
+	kdDebug() << "renewing tickets for " << me->data->data << "@" << me->realm.data << endl;
 #endif /* DEBUG */
 
-		kerror = krb5_get_renewed_creds(ctx, &my_creds, me, cc,
-								NULL);
+	kerror = krb5_get_renewed_creds(ctx, &my_creds, me, cc,
+							NULL);
 
-		if(kerror)
-		{
-				kdDebug() << "Kerberos returned " << kerror << 
-					" while renewing creds" << endl;
-				return kerror;
-		}
-		kerror = krb5_cc_initialize(ctx, cc, me);
-		if(kerror)
-		{
-				kdDebug() << "Kerberos returned " << kerror << 
-					" while initializing cred cache" << endl;
-				return code;
-		}
-		kerror = krb5_cc_store_cred(ctx, cc, &my_creds);
-		if(kerror)
-		{
-				kdDebug() << "Kerberos returned " << kerror << 
-					" while storing credentials" << endl;
-				return kerror;
-		}
+	if(kerror)
+	{
+		kdDebug() << "Kerberos returned " << kerror << 
+			" while renewing creds" << endl;
+		return kerror;
+	}
+	kerror = krb5_cc_initialize(ctx, cc, me);
+	if(kerror)
+	{
+		kdDebug() << "Kerberos returned " << kerror << 
+			" while initializing cred cache" << endl;
+		return code;
+	}
+	kerror = krb5_cc_store_cred(ctx, cc, &my_creds);
+	if(kerror)
+	{
+		kdDebug() << "Kerberos returned " << kerror << 
+			" while storing credentials" << endl;
+		return kerror;
+	}
 #ifdef DEBUG
-		kdDebug() << "Successfully renewed tickets" << endl;
+	kdDebug() << "Successfully renewed tickets" << endl;
 #endif
-		if(doNotify)
-		{
-			KPassivePopup::message("Kerberos tickets have been renewed", 0);
-		}
+	if(doNotify)
+	{
+		KPassivePopup::message("Kerberos tickets have been renewed", 0);
+	}
+	return 0;
 
-		if(doAklog)
+}
+
+void kredentials::tryRenewTickets()
+{
+	time_t now = time(0);
+	killTimers();
+	
+	if(tktRenewableExpirationTime == 0)
+	{
+		KMessageBox::information(0, "You do not have renewable tickets.", 0, 0);
+	}
+	else if(tktRenewableExpirationTime < now)
+	{
+		KMessageBox::information(0, "Your tickets have outlived their renewable lifetime and can't be renewed.", 0, 0);
+	}
+	else if(renewTickets() != 0)
+	{
+#ifdef DEBUG
+		kdDebug() << "renewTickets did not get new tickets" << endl;
+#endif /* DEBUG */
+		hasCurrentTickets();
+		if(authenticated == 0)
 		{
-			int aklogResult = system("aklog");
-			if(aklogResult)
-				KMessageBox::error(0, "Unable to get new AFS tokens.", 0);
+			KMessageBox::information(0, "Your tickets have expired. Please run 'renew' in a shell.", "Kerberos", 0, 0);
 		}
-		return 0;
+	}
+	// restart the timer here, regardless of whether we currently have tickets now or not.
+	// The user may get tickets before the next timeout, and we need to be able to renew them
+	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
+	startTimer(1000);
+	if((authenticated > 0) && 
+	((tktRenewableExpirationTime - now) < 3600) &&
+	((now % 900) == 0))
+	{
+		// tickets expire in less than 1 hour
+		KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
+	}
 }
 
 void kredentials::hasCurrentTickets()
@@ -245,38 +275,13 @@ void kredentials::timerEvent(QTimerEvent *e)
 #ifdef DEBUG
 	kdDebug() << "timerEvent triggered, secondsToNextRenewal == " << secondsToNextRenewal << endl;
 #endif /* DEBUG */
-	time_t now = time(0);
 	secondsToNextRenewal--;
 	if(secondsToNextRenewal < 0)
 	{
-		killTimers();
-		if((tktRenewableExpirationTime < now) || (renewTickets() != 0))
-		{
-#ifdef DEBUG
-				kdDebug() << "renewTickets did not get new tickets" << endl;
-#endif /* DEBUG */
-			hasCurrentTickets();
-			if(authenticated == 0)
-			{
-				KMessageBox::information(0, "Your tickets have expired. Please run 'renew' in a shell.", "Kerberos", 0, 0);
-			}
-		}
-
-		// restart the timer here, regardless of whether we currently have tickets now or not.
-		// The user may get tickets before the next timeout, and we need to be able to renew them
-		secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
-		startTimer(1000);
-	}
-	else if(authenticated &&
-			((now - tktExpirationTime) < 3600) &&
-			((authenticated % 900) == 0))
-	{
-		// tickets expire in less than 1 hour
-		KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
+		tryRenewTickets();
 	}
 	return;
 }
-
 
 void kredentials::showTicketCache()
 {
