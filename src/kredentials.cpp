@@ -183,8 +183,9 @@ void kredentials::tryRenewTickets()
 		LOG << "renewTickets did not get new tickets" << endl;
 
 		hasCurrentTickets();
-		if(authenticated == 0)
+		if(authenticated == 0 && !userNotified)
 		{
+			userNotified = true;
 			KMessageBox::information(0, "Your tickets have expired. Please run 'renew' in a shell.", "Kerberos", 0, 0);
 		}
 	}
