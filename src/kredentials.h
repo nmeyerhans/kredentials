@@ -30,7 +30,6 @@
 #include <kuser.h>
 #include <kaction.h>
 
-#include "krb_defs.h"
 #include <krb5.h>
 
 /**
@@ -54,21 +53,26 @@ public:
 
 protected slots:
 	int renewTickets();
+	int hasCurrentTickets();
 	
 protected:
-	//int  renewTickets();
 	//void paintEvent(QPaintEvent *);
 	void mousePressEvent(QMouseEvent *);
+	void renewOrGetNewTicekts();
 	//void timerEvent(QTimerEvent *);
 
 	
 private:
 	int kerror;
+	int authenticated;
 	QPopupMenu *menu;
 	KUser *kerberosUser;
-	struct k5_data *k5;
-	struct k_opts *k5_opts;
-	KAction *renewAct, *reInitAct;
+	KAction *renewAct, *reInitAct, *statusAct;
+	
+	krb5_context ctx;
+	krb5_ccache cc;
+	krb5_principal me;
+	char* name;
 };
 
 #endif // _KREDENTIALS_H_
