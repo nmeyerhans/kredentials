@@ -26,7 +26,7 @@
 static const char description[] =
     I18N_NOOP("Monitor and update authentication tokens");
 
-static const char version[] = "0.5";
+static const char version[] = "0.6";
 
 static KCmdLineOptions options[] =
 {
