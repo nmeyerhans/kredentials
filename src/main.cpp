@@ -31,7 +31,9 @@ static const char version[] = "0.1";
 static KCmdLineOptions options[] =
 {
 //    { "+[URL]", I18N_NOOP( "Document to open." ), 0 },
-    KCmdLineLastOption
+	{ "i", 0, 0},
+	{ "inform", "Inform the user when credentials are renewed", 0},
+	KCmdLineLastOption
 };
 
 int main(int argc, char **argv)
@@ -41,10 +43,15 @@ int main(int argc, char **argv)
 	about.addAuthor( "Noah Meyerhans", 0, "noahm@csail.mit.edu" );
 	KCmdLineArgs::init(argc, argv, &about);
 	KCmdLineArgs::addCmdLineOptions( options );
+	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 	KApplication app;
 	kredentials *mainWin = 0;
 
 	mainWin = new kredentials();
+	if(args->isSet("inform"))
+	{
+		mainWin->setNotify(true);
+	}
 	app.setMainWidget( mainWin );
 	mainWin->show();
 

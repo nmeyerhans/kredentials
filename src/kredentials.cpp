@@ -51,6 +51,7 @@ kredentials::kredentials()
 #ifdef DEBUG
 	kdDebug() << "kredentials constructor called" << endl;
 #endif /* DEBUG */
+	doNotify = 0;
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
 	this->setPixmap(this->loadIcon("panel"));
 	menu = new QPopupMenu();
@@ -150,6 +151,10 @@ int kredentials::renewTickets()
 #ifdef DEBUG
 		kdDebug() << "Successfully renewed tickets" << endl;
 #endif
+		if(doNotify)
+		{
+			KPassivePopup::message("Kerberos tickets have been renewed", 0);
+		}
 		return 0;
 
 }
@@ -287,6 +292,11 @@ void kredentials::showTicketCache()
 		KMessageBox::information(0, msgString, "Kerberos", 0, 0);
 	}
 	return;
+}
+
+void kredentials::setNotify(int state)
+{
+	doNotify = state;
 }
 
 #include "kredentials.moc"

@@ -54,7 +54,8 @@ public:
      * Default Destructor
      */
     virtual ~kredentials();
-
+	void setNotify(int);
+	
 protected slots:
 	int renewTickets();
 	void hasCurrentTickets();
@@ -85,6 +86,7 @@ private:
 	char* name;
 	void initKerberos();
 	
+	int doNotify;
 };
 
 #endif // _KREDENTIALS_H_
