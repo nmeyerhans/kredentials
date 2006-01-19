@@ -1,3 +1,11 @@
+kredentials (0.7.1) unstable; urgency=low
+
+  * update copyright notices
+  * Add CVS ID tags in a bunch of places
+  * put something in the TODO file
+
+ -- Noah Meyerhans <noahm@csail.mit.edu>  Thu, 19 Jan 2006 13:23:29 -0500
+
 kredentials (0.7) unstable; urgency=low
 
   * AHA!  Finally tracked down and fixed the annoying and incorrect
