@@ -1,16 +1,12 @@
 Begin3
-Title:          kredentials -- Some description
-Version:        0.1
+Title:          kredentials -- renew kerberos and AFS creds
+Version:        0.7.1
 Entered-date:   
 Description:    
-Keywords:       KDE Qt
+Keywords:       KDE Qt Kerberos AFS
 Author:         Noah Meyerhans <noahm@csail.mit.edu>
 Maintained-by:  Noah Meyerhans <noahm@csail.mit.edu>
-Home-page:      
-Alternate-site: 
-Primary-site:   ftp://ftp.kde.org/pub/kde/unstable/apps/utils
-                xxxxxx  kredentials-0.1.tar.gz
-                xxx     kredentials-0.1.lsm
-Platform:       Linux. Needs KDE
-Copying-policy: Custom
+Primary-site:   http://people.csail.mit.edu/noahm/kredentials
+Platform:       Linux. Needs KDE and kerberos libraries
+Copying-policy: MIT
 End
