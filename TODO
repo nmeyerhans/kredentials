@@ -1,1 +1,13 @@
+
+* Add some sort of advance warning about the impending expiration of
+   ticket.
+
+* Add a configuration panel where people can enable/disable warnings,
+   etc
+
+* Set up autostart, session management, etc.  Make it configurable
+
+* If we're going to call aklog, we should probably allow the user to
+   configure the location of the aklog binary.
+
  
