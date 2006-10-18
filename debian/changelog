@@ -1,3 +1,10 @@
+kredentials (0.8) unstable; urgency=low
+
+   * Apply a patch from Mike Oltmans <moltmans@csail.mit.edu> to improve the
+     warning dialog code.  It might actually work now...
+
+ -- Noah Meyerhans <noahm@csail.mit.edu>  Wed, 18 Oct 2006 17:28:56 -0400
+
 kredentials (0.7.1) unstable; urgency=low
 
   * update copyright notices
