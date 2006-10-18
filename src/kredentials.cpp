@@ -40,9 +40,11 @@
 
 #ifdef DEBUG
 #define DEFAULT_RENEWAL_INTERVAL 20
+#define DEFAULT_WARNING_INTERVAL 3600
 #define LOG kdDebug()
 #else
 #define DEFAULT_RENEWAL_INTERVAL 3600
+#define DEFAULT_WARNING_INTERVAL 86400
 #define LOG kndDebug()
 #endif /*DEBUG*/
 
@@ -56,7 +58,9 @@ kredentials::kredentials( int notify, int aklog )
 
 	doNotify = notify;
 	doAklog  = aklog;
+        renewWarningTime = DEFAULT_WARNING_INTERVAL;
 	secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
+        renewWarningFlag = 0;
 	this->setPixmap(this->loadIcon("kredentials"));
 	menu = new QPopupMenu();
 	//menu->insertItem("Renew Tickets", this, SLOT(renewTickets()), CTRL+Key_R);
@@ -217,12 +221,26 @@ void kredentials::tryRenewTickets()
 			}
 		}
 		
-		if((tktRenewableExpirationTime - now) < 3600 &&
-		((now % 900) == 0))
+                LOG << "WarnTime: " << renewWarningTime << " " << doNotify << endl;
+		if(doNotify && tktRenewableExpirationTime - now < renewWarningTime)
 		{
-			// tickets expire in less than 1 hour
-			KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
+                  LOG << "Renew=" << renewWarningFlag << endl;
+                  if(renewWarningFlag == 0) {
+                    renewWarningFlag = 1;
+                    LOG << "RESET: Renew=" << renewWarningFlag << endl;
+
+                    QString msgString = QString("Kerberos tickets will permanently expire on ") +  QString(ctime(&tktRenewableExpirationTime)) +
+                      QString(" You may want to renew them now.");
+                    KMessageBox::information(0, msgString, 0, 0);
+                    //KPassivePopup::message("Kerberos tickets expire in less than one hour.  You may wish to renew soon.", 0);
+                  }
+
 		}
+                else 
+                {
+                  renewWarningFlag = 0;
+                  LOG << "RESET: Renew=" << renewWarningFlag << endl;
+                }
 	}
 	return;
 }
