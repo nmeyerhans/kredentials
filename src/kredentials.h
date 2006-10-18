@@ -80,6 +80,9 @@ private:
 	time_t tktExpirationTime;
 	time_t tktRenewableExpirationTime;
 	int secondsToNextRenewal;
+        int renewWarningFlag;
+        int renewWarningTime;
+
 	QPopupMenu *menu;
 	KUser *kerberosUser;
 	KAction *renewAct, *reInitAct, *statusAct;
