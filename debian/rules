@@ -21,7 +21,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp config-stamp
-	-$(MAKE) clean
+	-$(MAKE) distclean
 	rm -f `find . -name "*~"`
 	rm -rf debian/tmp debian/files* core debian/substvars
 
