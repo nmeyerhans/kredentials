@@ -34,7 +34,7 @@ binary-indep: build
 binary-arch: build
 	dh_testdir
 	dh_testroot
-	$(MAKE) install DESTDIR=`pwd`/debian/tmp
+	$(MAKE) install DESTDIR=`pwd`/debian/kredentials
 	dh_installchangelogs
 	dh_installdocs NEWS README TODO
 	dh_installman kredentials.1
