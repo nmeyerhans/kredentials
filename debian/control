@@ -2,7 +2,7 @@ Source: kredentials
 Section: net
 Priority: optional
 Maintainer: Noah Meyerhans <noahm@csail.mit.edu>
-Standards-Version: 3.5.8
+Standards-Version: 3.7.2.2
 Build-Depends: debmake, libkrb5-dev, kdelibs4-dev
 
 Package: kredentials
