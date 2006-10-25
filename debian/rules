@@ -1,6 +1,4 @@
 #!/usr/bin/make -f
-# Made with the aid of debmake, by Christoph Lameter,
-# based on the sample debian/rules file for GNU hello by Ian Jackson.
 
 package=kredentials
 
@@ -39,7 +37,7 @@ binary-arch: build
 	$(MAKE) install DESTDIR=`pwd`/debian/tmp
 	dh_installchangelogs
 	dh_installdocs NEWS README TODO
-	dh_installman
+	dh_installman kredentials.1
 	dh_link
 	dh_strip
 	dh_compress
