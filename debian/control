@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Noah Meyerhans <noahm@csail.mit.edu>
 Standards-Version: 3.7.2.2
-Build-Depends: debmake, libkrb5-dev, kdelibs4-dev
+Build-Depends: debhelper, libkrb5-dev, kdelibs4-dev
 
 Package: kredentials
 Architecture: any
