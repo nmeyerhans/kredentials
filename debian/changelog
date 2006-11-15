@@ -1,9 +1,7 @@
-kredentials (0.9.1) unstable; urgency=medium
+kredentials (0.9.1) unstable; urgency=low
 
   * Fix panel.png corruption that occurred due to some subversion
     properties that had been set.
-  * Set urgency=medium because this is a very simple bugfix that needs
-    to make it into the release.
 
  -- Noah Meyerhans <noahm@csail.mit.edu>  Wed, 15 Nov 2006 16:45:52 -0500
 
