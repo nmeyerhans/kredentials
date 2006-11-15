@@ -1,3 +1,10 @@
+kredentials (0.9.1) unstable; urgency=low
+
+  * Fix panel.png corruption that occurred due to some subversion
+    properties that had been set.
+
+ -- Noah Meyerhans <noahm@csail.mit.edu>  Wed, 15 Nov 2006 16:45:52 -0500
+
 kredentials (0.9) unstable; urgency=low
 
   * Convert build system to debhelper from debstd.
