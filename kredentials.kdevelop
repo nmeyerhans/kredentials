@@ -52,7 +52,7 @@
         <f77flags/>
       </debug>
       <default>
-        <configargs>--disable-debug</configargs>
+        <configargs>--disable-debug --with-kerberos5=/usr</configargs>
         <builddir></builddir>
         <topsourcedir></topsourcedir>
         <cppflags></cppflags>
@@ -66,6 +66,7 @@
         <cflags></cflags>
         <cxxflags></cxxflags>
         <f77flags></f77flags>
+        <envvars/>
       </default>
     </configurations>
     <make>
@@ -76,7 +77,7 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
     </make>
   </kdevautoproject>
   <kdevfileview>
@@ -145,6 +146,7 @@
     <display>
       <staticmembers>false</staticmembers>
       <demanglenames>true</demanglenames>
+      <outputradix>10</outputradix>
     </display>
   </kdevdebugger>
   <kdevfilecreate>
@@ -169,6 +171,19 @@
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
+    <qt>
+      <used>false</used>
+      <version>3</version>
+      <root>/usr/lib/qt3</root>
+    </qt>
+    <creategettersetter>
+      <prefixGet></prefixGet>
+      <prefixSet>set</prefixSet>
+      <prefixVariable>m_,_</prefixVariable>
+      <parameterName>theValue</parameterName>
+      <inlineGet>true</inlineGet>
+      <inlineSet>true</inlineSet>
+    </creategettersetter>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>
