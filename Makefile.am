@@ -1,7 +1,7 @@
 SUBDIRS = $(TOPSUBDIRS)
 
-$(top_srcdir)/configure.in: configure.in.in $(top_srcdir)/subdirs
-	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common configure.in ;
+configure.in: configure.in.in $(top_srcdir)/subdirs
+	$(MAKE) -f admin/Makefile.common configure.in ;
 
 $(top_srcdir)/subdirs:
 	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common subdirs
