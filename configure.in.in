@@ -17,7 +17,6 @@ AC_ARG_WITH(kerberos5,
 		KRB5ROOT=[/usr/local]
 	]
 )
-echo $KRB5ROOT
 if test -n "${KRB5ROOT}"
 then
 	CPPFLAGS="$CPPFLAGS -I${KRB5ROOT}/include"
