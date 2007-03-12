@@ -28,7 +28,7 @@
 static const char description[] =
     I18N_NOOP("Monitor and update authentication tokens");
 
-static const char version[] = "0.6";
+static const char version[] = "0.9.2";
 
 static KCmdLineOptions options[] =
 {
@@ -52,9 +52,10 @@ int main(int argc, char **argv)
 	    fprintf(stderr, "Kredentials is already running!\n");
 	    exit(0);
 	}
+
+
 	KUniqueApplication app;
 	app.disableSessionManagement();
-
 	kredentials *mainWin = 0;
 
 	mainWin = new kredentials();

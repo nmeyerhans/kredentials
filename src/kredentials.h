@@ -36,14 +36,13 @@
 #include <kdialogbase.h>
 
 #include <time.h>
-#include <krb5.h>
-
+#include "krb5_wrap.h"
 /**
  * @short Application Main Window
  * @author Noah Meyerhans <noahm@csail.mit.edu>
- * @version 0.1
+ * @version 0.9.2
  */
-class kredentials : public KSystemTray
+class kredentials : public KSystemTray,public krb5::tixmgr
 {
     Q_OBJECT
 public:
@@ -61,10 +60,12 @@ public:
 	void setDoAklog(int);
 	
 protected slots:
-	int renewTickets();
+    //int renewTickets();
 	void tryRenewTickets();
-	void hasCurrentTickets();
+    // void hasCurrentTickets();
 	void showTicketCache();
+	void tryPassGetTickets();
+	bool destroyTickets();
 	
 protected:
 	//void paintEvent(QPaintEvent *);
@@ -75,27 +76,16 @@ protected:
 	KDialogBase *noAuthDlg;
 	
 private:
-	int kerror;
-	int authenticated;
-	time_t tktExpirationTime;
-	time_t tktRenewableExpirationTime;
 	int secondsToNextRenewal;
         int renewWarningFlag;
         int renewWarningTime;
 
 	QPopupMenu *menu;
 	KUser *kerberosUser;
-	KAction *renewAct, *reInitAct, *statusAct;
+	KAction *renewAct, *reInitAct, *statusAct, *destroyAct, *freshTixAct;
 	QPixmap panelIcon;
 	
-	krb5_context ctx;
-	krb5_ccache cc;
-	krb5_principal me;
-	char* name;
-	void initKerberos();
-	
 	int doNotify;
-	int doAklog;
 
 };
 
