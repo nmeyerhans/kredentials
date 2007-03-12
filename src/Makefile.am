@@ -2,7 +2,7 @@
 INCLUDES = $(all_includes)
 
 # these are the headers for your project
-noinst_HEADERS = kredentials.h
+noinst_HEADERS = kredentials.h krb5_wrap.h
 
 # let automoc handle all of the meta source files (moc)
 METASOURCES = AUTO
@@ -17,12 +17,20 @@ KDE_ICON = kredentials
 #########################################################################
 # this is the program that gets installed.  it's name is used for all
 # of the other Makefile.am variables
-bin_PROGRAMS = kredentials
+# the second program is for testing only
+bin_PROGRAMS = kredentials 
+check_PROGRAMS = krbcheck
+TESTS = krbcheck
 
 # the application source, library search path, and link libraries
-kredentials_SOURCES = main.cpp kredentials.cpp
+kredentials_SOURCES = main.cpp kredentials.cpp krb5_wrap.cpp
 kredentials_LDFLAGS = $(KDE_RPATH) $(all_libraries)
 kredentials_LDADD = $(LIB_KDEUI)
+
+
+krbcheck_SOURCES = krbcheck.cpp krb5_wrap.cpp
+krbcheck_LDFLAGS = $(all_libraries)
+krbcheck_LDADD = $(LIB_KDEUI)
 
 # this is where the desktop file will go 
 shelldesktopdir   = $(kde_appsdir)/Utilities

@@ -1,3 +1,15 @@
+kredentials (0.9.2) unstable; urgency=high
+
+  * incorporate patch from Martin Ginkel <mginkel@mpi-magdeburg.mpg.de>
+    - factored out kerberos-code with c++ wrappers for all krb5_xxx data
+    - added lots of krb5 memory-free code, otherwise kredentials eats 
+      continuously memory
+    - added new actions and methods for destroying credentials and creating 
+      them from password
+    - added a CLI test for the kerberos part (debugging of kde-apps is awful)
+
+ --
+
 kredentials (0.9.1) unstable; urgency=medium
 
   * Fix panel.png corruption that occurred due to some subversion
