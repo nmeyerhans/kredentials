@@ -2804,15 +2804,19 @@ AC_DEFUN([AC_CHECK_COMPILERS],
     case $enableval in
       yes)
         kde_use_debug_code="yes"
-        kde_use_debug_define=no
+        kde_use_debug_define="no"
         ;;
       full)
         kde_use_debug_code="full"
-        kde_use_debug_define=no
+        kde_use_debug_define="no"
+        ;;
+      no)
+        kde_use_debug_code="no"
+        kde_use_debug_define="yes"
         ;;
       *)
         kde_use_debug_code="no"
-        kde_use_debug_define=yes
+        kde_use_debug_define="yes"
         ;;
     esac
   ], 
@@ -2824,7 +2828,7 @@ AC_DEFUN([AC_CHECK_COMPILERS],
   AC_ARG_ENABLE(dummyoption,
 	        AC_HELP_STRING([--disable-debug],
 	  		       [disables debug output and debug symbols [default=no]]),
-		[],[])
+		[kde_use_debug_define="yes"],[])
 
   AC_ARG_ENABLE(strict,
 		AC_HELP_STRING([--enable-strict],
