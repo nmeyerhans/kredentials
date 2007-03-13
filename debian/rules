@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 package=kredentials
+export kde_htmldir=/usr/share/doc/kde/HTML
 
 configure: config-stamp
 
@@ -21,7 +22,7 @@ clean:
 	rm -f build-stamp config-stamp
 	-$(MAKE) distclean
 	rm -f `find . -name "*~"`
-	rm -rf debian/tmp debian/files* core debian/substvars
+	rm -rf debian/kredentials debian/files* core debian/substvars
 
 binary-indep: build
 	dh_testroot
