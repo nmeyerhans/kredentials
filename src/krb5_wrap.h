@@ -182,6 +182,7 @@ namespace krb5{
 	virtual bool initKerberos();
 	virtual bool passGetCreds(const std::string& pass);
 	virtual bool runAklog();
+	virtual bool runUnlog();
 	virtual bool destroyTickets();
     };
 

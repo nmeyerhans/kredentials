@@ -585,6 +585,24 @@ namespace krb5{
 
     };
 
+    bool tixmgr::runUnlog(){
+	if(!doAklog) return TRUE;
+	if(authenticated){
+		LOG << "Calling unlog" << endl;
+		int ret = system("unlog");
+		if(ret==-1)
+		    LOG<<"Unable to run unlog"<<endl;
+		if(ret>0)
+		    LOG<<"unlog failed with"<<ret<<endl;
+		if( ret != 0 )
+		    return FALSE;
+		else
+		    return TRUE;
+	}else 
+	    return FALSE;
+
+    };
+
     principal* tixmgr::osPrincipal(){
 	principal* ret=NULL;
 	struct passwd *pw;
@@ -611,7 +629,7 @@ namespace krb5{
 	if(cc.error())
 	    return FALSE;
 	else
-	    return TRUE;
+	    return runUnlog();
     }
 
 }
