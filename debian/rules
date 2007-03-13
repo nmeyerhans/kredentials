@@ -41,7 +41,7 @@ binary-arch: build
 	dh_installman kredentials.1
 	dh_link
 	dh_strip
-	dh_compress
+	dh_compress -X.docbook
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
