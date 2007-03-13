@@ -1,4 +1,4 @@
-kredentials (0.9.2) unstable; urgency=high
+kredentials (0.9.2) unstable; urgency=medium
 
   * incorporate patch from Martin Ginkel <mginkel@mpi-magdeburg.mpg.de>
     - factored out kerberos-code with c++ wrappers for all krb5_xxx data
@@ -7,8 +7,12 @@ kredentials (0.9.2) unstable; urgency=high
     - added new actions and methods for destroying credentials and creating 
       them from password
     - added a CLI test for the kerberos part (debugging of kde-apps is awful)
-
- --
+  * make a first attempt at docbook documentation
+  * update all the files in admin/*, including config.sub and config.guess
+    to versions provided by newer autoconf and kdeapptemplate. 
+    (Closes: Bug#414462)
+  
+ -- Noah Meyerhans <noahm@csail.mit.edu>  Tue, 13 Mar 2007 10:02:22 -0400
 
 kredentials (0.9.1) unstable; urgency=medium
 
