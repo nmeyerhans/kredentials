@@ -39,6 +39,7 @@
 #include <time.h>
 #include <string.h>
 #include <iostream>
+#include <memory>
 
 #ifndef NDEBUG
 #define DEFAULT_RENEWAL_INTERVAL 20

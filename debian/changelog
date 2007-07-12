@@ -1,3 +1,9 @@
+kredentials (0.9.3) UNRELEASED; urgency=low
+
+  * Fix building on GCC 4.3 (Closes: Bug#417302)
+
+ -- Noah Meyerhans <noahm@lore.csail.mit.edu>  Thu, 12 Jul 2007 09:41:28 -0400
+
 kredentials (0.9.2) unstable; urgency=medium
 
   * incorporate patch from Martin Ginkel <mginkel@mpi-magdeburg.mpg.de>
