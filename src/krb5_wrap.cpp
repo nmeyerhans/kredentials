@@ -251,17 +251,29 @@ namespace krb5{
     }
 
     const char* principal::getRealm() const{
-	return _principal->realm.data;
+#ifdef HEIMDAL
+		return krb5_realm_data(_principal)->realm; 
+#else
+		return _principal->realm.data;
+#endif
     }
     const int principal::getDataLength() const{
 	if(_principal)
-	    return _principal->length;
+#ifdef HEIMDAL
+		return _principal->name.name_string.len;
+#else
+		return _principal->length;
+#endif
 	else
 	    return 0;
     }
     const char* principal::getData(const int i) const{
 	if((i>=0)&&(i < getDataLength() ))
-	    return (char *)(_principal->data[i].data);
+#ifdef HEIMDAL
+		return _principal->name.name_string.val[i];
+#else
+		return (char *)(_principal->data[i].data);
+#endif
 	else
 	    return NULL;
     }
@@ -466,10 +478,9 @@ namespace krb5{
 
     bool tixmgr::hasCurrentTickets(){
 	int noTix = 1;
-	
-	krb5_int32 now;
-	
-		
+
+	long now;
+
 	LOG << "Called hasCurrentTickets()" << endl;
 
 	/* if kerberos is not currently happy, try reinitializing.  The user may 
@@ -477,12 +488,10 @@ namespace krb5{
 	*/
 	if(kerror)
 	{
-
 		LOG << "hasCurrentTickets(): kerror = " << kerror << endl;
 		LOG << "Trying to reinitialize kerberos..." << endl;
 		initKerberos();
 		authenticated = 0;
-		
 	}
 
 	now = time(0);
@@ -533,8 +542,6 @@ namespace krb5{
 
 
     bool tixmgr::passGetCreds(const string& pass){
-	krb5_get_init_creds_opt options;
-	krb5_get_init_creds_opt_init(&options);
 	creds my_creds(ctx);
 	auto_ptr<principal> osMe(NULL);
 	krb5::principal* pme=cc.getPrincipal();
@@ -555,7 +562,7 @@ namespace krb5{
 					     ppass, 0, 0,
 					     0, 
 					     0,
-					 &options);
+					 NULL);
 	if(kerror){
 	    LOG<<"Error on passGetCreds "<<kerror<<endl;
 	    return FALSE;
