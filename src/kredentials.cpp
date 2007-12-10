@@ -34,6 +34,9 @@
 #include <kpassivepopup.h>
 #include <kpassdlg.h>
 
+// for DCOP access to screen saver
+#include <dcopref.h>
+
 //#include <krb5.h>
 
 #include <time.h>
@@ -46,6 +49,12 @@
 #define DEFAULT_WARNING_INTERVAL 3600
 #define LOG kdDebug()
 #else
+/* These intervals really need to be configurable.  In some locations
+ * new tickets need to be obtained every day, while others grant
+ * tickets with a long renew lifetime and only expect to get new ones
+ * once every week or so.  Different intervals are appropriate at
+ * different sites...
+ */
 #define DEFAULT_RENEWAL_INTERVAL 3600
 #define DEFAULT_WARNING_INTERVAL 86400
 #define LOG kndDebug()
@@ -139,8 +148,9 @@ void kredentials::tryPassGetTickets(){
     }
     killTimers();
     LOG<<"Getting Pass"<<endl;
-    int result=KPasswordDialog::getPassword(password,myName.c_str());
-    if(result==KPasswordDialog::Accepted){
+
+	while (1) // infinite loop until receives a valid password
+	if (KPasswordDialog::getPassword(password,myName.c_str())==KPasswordDialog::Accepted) {
 	std::string pass(password);
 	LOG<<"Getting Creds"<<endl;
 	bool res=passGetCreds(pass);
@@ -148,16 +158,46 @@ void kredentials::tryPassGetTickets(){
 	if(!res){
 	    KMessageBox::sorry(0, i18n("Your password was probably wrong"),
 			       0, 0);
-	    return;
+
+	    continue; // I'll try again
 	}else{
 	    hasCurrentTickets();
 	    if( !runAklog() ){
 		KMessageBox::sorry(0, i18n("Unable to run aklog"), 0, 0);
 	    }
+    	startTimer(1000);
+		//that's it
+		return;
 	}
-    };
-    startTimer(1000);
+    } else {
+		// user pressed cancel, retry later
+    	startTimer(1000);
+		return;
+	};
 }
+
+void kredentials::tryPassGetTicketsScreenSaverSafe(){
+	// check if screen saver is active (blanked)
+	// if so, don't prompt the password dialog this time
+	// and don't try to get new tickets, either the screen
+	// saver unlock will do it, either it will pop-up once
+	// screen saver will be deactivated
+
+	DCOPRef screensaver("kdesktop", "KScreensaverIface");
+	DCOPReply reply = screensaver.call("isBlanked");
+
+	if (!reply.isValid())
+	{
+		LOG<<"There is some error using DCOP to access screensaver status"<<endl;
+	} else if (reply) {
+		// screen saver is running
+		return;
+	}
+
+	tryPassGetTickets();
+}
+
+
 
 void kredentials::tryRenewTickets()
 {
@@ -165,9 +205,12 @@ void kredentials::tryRenewTickets()
     killTimers();
 
     if(!hasCurrentTickets()){
-	tryPassGetTickets();
+	tryPassGetTicketsScreenSaverSafe();
     }else if(tktRenewableExpirationTime == 0){
-	tryPassGetTickets();
+	// can not be renewed
+	// check if it will expire soon 
+	if ( tktExpirationTime - now < renewWarningTime)
+		tryPassGetTicketsScreenSaverSafe();
     }
     else if(tktRenewableExpirationTime < now)
     {
@@ -175,16 +218,15 @@ void kredentials::tryRenewTickets()
 	LOG << "tktRenewableExpirationTime has passed: ";
 	LOG << "tktRenewableExpirationTime = " << 
 	    tktRenewableExpirationTime << ", now = " << now << endl;
-	tryPassGetTickets();
+	tryPassGetTicketsScreenSaverSafe();
     }
     else if(!renewTickets())
     {
-
 	LOG << "renewTickets did not get new tickets" << endl;
 
 
 	if(!hasCurrentTickets()){
-	    tryPassGetTickets();
+	    tryPassGetTicketsScreenSaverSafe();
 	}
     }
     else
@@ -206,7 +248,8 @@ void kredentials::tryRenewTickets()
 	LOG << "WarnTime: " << renewWarningTime << " " << 
 	    doNotify << endl;
 	if(doNotify && 
-	   tktRenewableExpirationTime - now < renewWarningTime)
+	   tktRenewableExpirationTime - now < renewWarningTime &&
+	   tktRenewableExpirationTime!=0)
 	{
 	    LOG << "Renew=" << renewWarningFlag << endl;
 	    if(renewWarningFlag == 0) {

@@ -65,6 +65,7 @@ protected slots:
     // void hasCurrentTickets();
 	void showTicketCache();
 	void tryPassGetTickets();
+	void tryPassGetTicketsScreenSaverSafe();
 	bool destroyTickets();
 	
 protected:

@@ -1,3 +1,15 @@
+kredentials (0.9.4) UNRELEASED; urgency=low
+
+  * Include patch from Hai Zaar <haizaar@gmail.com>
+    - Make kredentials build against heimdal kerberos
+    - kscreensaver awareness - the password dialog will not popup if screen
+      saver is running.  (should probably make this support e.g. 
+      xscreensaver, too)
+    - If user does not enter the password (hits Cancel), prompt for the
+      password again later.
+
+ -- Noah Meyerhans <noahm@csail.mit.edu>  Mon, 10 Dec 2007 14:56:14 -0500
+
 kredentials (0.9.3) UNRELEASED; urgency=low
 
   * Fix building on GCC 4.3 (Closes: Bug#417302)
