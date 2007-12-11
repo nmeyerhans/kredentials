@@ -8,8 +8,9 @@ kredentials (0.9.4) unstable; urgency=low
     - If user does not enter the password (hits Cancel), prompt for the
       password again later.
   * Stop ignoring the result of make distclean in debian/rules
+  * Set the right Maintainer in debian/control
 
- -- Noah Meyerhans <noahm@debian.org>  Mon, 10 Dec 2007 21:08:56 -0500
+ -- Noah Meyerhans <noahm@debian.org>  Mon, 10 Dec 2007 21:20:39 -0500
 
 kredentials (0.9.3) UNRELEASED; urgency=low
 
