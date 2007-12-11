@@ -20,7 +20,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp config-stamp
-	-$(MAKE) distclean
+	test ! -f Makefile || $(MAKE) distclean
 	rm -f `find . -name "*~"`
 	rm -rf debian/kredentials debian/files* core debian/substvars
 
