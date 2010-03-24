@@ -22,6 +22,7 @@
 
 #include <kdebug.h>
 #include <krb5_wrap.h>
+#include <cstdio>
 #include <iostream>
 #include <memory>
 #include <termios.h>

@@ -1,3 +1,11 @@
+kredentials (0.9.4+nmu1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix build with gcc-4.4 using patch from Martin Michlmayr (Closes:
+    #505119)
+
+ -- Christoph Egger <christoph@debian.org>  Fri, 25 Dec 2009 15:28:34 +0100
+
 kredentials (0.9.4) unstable; urgency=low
 
   * Include patch from Hai Zaar <haizaar@gmail.com>
