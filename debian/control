@@ -2,7 +2,7 @@ Source: kredentials
 Section: net
 Priority: optional
 Maintainer: Noah Meyerhans <noahm@debian.org>
-Standards-Version: 3.7.2.2
+Standards-Version: 3.8.4.0
 Build-Depends: debhelper, libkrb5-dev, kdelibs4-dev
 
 Package: kredentials

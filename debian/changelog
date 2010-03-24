@@ -3,8 +3,9 @@ kredentials (0.9.5) unstable; urgency=low
   * Change the symbol we look for when checking for the presence of -lkrb5 in the 
     configure script.
   * Update the menu entry to be more compliant with current policies.
+  * Bump standards version to 3.8.4.0
 
- -- Noah Meyerhans <noahm@debian.org>  Tue, 23 Mar 2010 23:48:41 -0700
+ -- Noah Meyerhans <noahm@debian.org>  Tue, 23 Mar 2010 23:53:17 -0700
 
 kredentials (0.9.4+nmu1) unstable; urgency=low
 
