@@ -1,7 +1,7 @@
 kredentials (0.9.5) unstable; urgency=low
 
   * Change the symbol we look for when checking for the presence of -lkrb5 in the 
-    configure script.
+    configure script. (Closes: #571393)
   * Update the menu entry to be more compliant with current policies.
   * Bump standards version to 3.8.4.0.
   * Switch to debhelper 7 for the package build process.
