@@ -41,7 +41,7 @@ then
 				K5LIBS="-lkrb5 -lk5crypto -lcom_err"
 			]
 	)
-	AC_CHECK_LIB(krb5, krb5_get_init_creds, ,
+	AC_CHECK_LIB(krb5, krb5_init_context, ,
 	AC_MSG_ERROR([Can't find kerberos libraries]))
 	if test ! -z "$need_dash_r" ; then
 		LDFLAGS="$LDFLAGS -R${KRB5ROOT}/lib"
