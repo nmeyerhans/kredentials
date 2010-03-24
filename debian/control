@@ -3,11 +3,11 @@ Section: net
 Priority: optional
 Maintainer: Noah Meyerhans <noahm@debian.org>
 Standards-Version: 3.8.4.0
-Build-Depends: debhelper, libkrb5-dev, kdelibs4-dev
+Build-Depends: debhelper (>= 7), libkrb5-dev, kdelibs4-dev
 
 Package: kredentials
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: openafs-krb5
 Description: KDE taskbar applet to update kerberos/AFS credentials
  kredentials is a KDE taskbar applet to periodically renew kerberos
