@@ -29,9 +29,9 @@
 #include <pwd.h>
 
 #ifndef NDEBUG
-  #define LOG kdDebug()
+  #define LOG kDebug()
 #else
-  #define LOG kndDebug()
+  #define LOG kDebugDevNull()
 #endif
 
 namespace krb5{
