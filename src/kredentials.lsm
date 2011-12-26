@@ -1,12 +1,12 @@
 Begin3
 Title:          kredentials -- renew kerberos and AFS creds
-Version:        0.7.1
+Version:        2.0-alpha
 Entered-date:   
-Description:    
+Description:    KDE Panel applet to keep authentication credentials fresh
 Keywords:       KDE Qt Kerberos AFS
 Author:         Noah Meyerhans <noahm@csail.mit.edu>
 Maintained-by:  Noah Meyerhans <noahm@csail.mit.edu>
 Primary-site:   http://people.csail.mit.edu/noahm/kredentials
-Platform:       Linux. Needs KDE and kerberos libraries
+Platform:       Linux. Needs KDE 4 and MIT Kerberos libraries
 Copying-policy: MIT
 End
