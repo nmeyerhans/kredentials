@@ -21,21 +21,10 @@
 
 #include "kredentials.h"
 
-#include <qlabel.h>
-#include <qcursor.h>
-#include <qevent.h>
-#include <QMouseEvent>
-#include <QTimerEvent>
-#include <kmenu.h>
-
-#include <kapplication.h>
-#include <kmainwindow.h>
 #include <klocale.h>
 #include <kdebug.h>
-#include <kiconloader.h>
-#include <kmessagebox.h>
-#include <kpassivepopup.h>
 #include <kpassworddialog.h>
+#include <kmessagebox.h>
 
 // XXX TEMPORARILY disable dcop stuff while porting to KDE4
 #if 0
