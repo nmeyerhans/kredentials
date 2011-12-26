@@ -1,6 +1,7 @@
 /*
  * Copyright 2006 by Martin Ginkel, MPI-Magdeburg <mginkel@mpi-magdeburg.mpg.de>
  * and Copyright 2004 by the Massachusetts Institute of Technology.
+ * Copyright 2007 Hai Zaar <haizaar@gmail.com>
  * All Rights Reserved.
  *
  * Permission to use, copy, modify, and distribute this software and
