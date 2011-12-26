@@ -1,3 +1,5 @@
+* Update the screensaver handling code to use dbus. This was dropped
+   with the KDE 4 port, since KDE moved to dbus from dcop.
 
 * Add some sort of advance warning about the impending expiration of
    ticket.
@@ -9,5 +11,3 @@
 
 * If we're going to call aklog, we should probably allow the user to
    configure the location of the aklog binary.
-
- 
