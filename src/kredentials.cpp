@@ -20,6 +20,7 @@
  */
 
 #include "kredentials.h"
+#include "passwddlg.h"
 
 #include <qlabel.h>
 #include <qcursor.h>
@@ -153,23 +154,23 @@ void kredentials::tryPassGetTickets(){
     timer->stop();
     LOG<<"Getting Pass";
 
-    KPasswordDialog dlg = KPasswordDialog(0, 0, 0);
-    dlg.setPrompt(prompt);
-    if(!dlg.exec()) {
+    KPasswordDialog *dlg = new KPasswordDialog(NULL, 0);
+    dlg->setPrompt(prompt);
+    if(!dlg->exec()) {
 	KMessageBox::sorry(0, i18n("Never mind..."), 0, 0);
 	return;
     }
 
     while (1) // infinite loop until receives a valid password
     {
-	std::string pass(dlg.password().toAscii());
+	std::string pass(dlg->password().toAscii());
 	LOG<<"Getting Creds";
 	bool res=passGetCreds(pass);
 	LOG<<"Finished Creds";
 	if(!res){
 	    KMessageBox::sorry(0, i18n("Your password was probably wrong"), 0, 0);
 
-	    return; // I'll try again
+	    break; // I'll try again
 	}else{
 	    hasCurrentTickets();
 	    if( !runAklog() ){
@@ -177,9 +178,11 @@ void kredentials::tryPassGetTickets(){
 	    }
 	    timer->start(1000);
 	    //that's it
-	    return;
+	    break;
 	}
-    };
+    }
+    delete dlg;
+    return;
 }
 
 void kredentials::tryPassGetTicketsScreenSaverSafe(){

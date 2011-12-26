@@ -20,7 +20,7 @@
  * $Id$
  */
 
-#include <kdebug.h>
+#include <KDebug>
 #include <krb5_wrap.h>
 #include <cstdio>
 #include <iostream>
@@ -31,7 +31,8 @@
 #ifndef NDEBUG
   #define LOG kDebug()
 #else
-  #define LOG kDebugDevNull()
+//#define LOG kDebugDevNull()
+#define LOG kDebug()
 #endif
 
 namespace krb5{
@@ -416,6 +417,7 @@ namespace krb5{
     bool tixmgr::initKerberos(){
 	kerror = 0;
 	ctx.reinit();
+	kDebug();
 	if((kerror=ctx.error())){
 	    LOG << "Kerberos returned on context reinit" << kerror << endl;
 	    return FALSE;
@@ -425,7 +427,7 @@ namespace krb5{
 	    LOG << "Kerberos returned on ccache init" << kerror << endl;
 	    return FALSE;
 	}
-	LOG << "Set cc to " << cc.name() << endl;
+	// LOG<< "Set cc to " << cc.name();
 	const krb5::principal* pme=cc.getPrincipal();
 	if(pme){
 	    const krb5::principal& me=*pme; 
@@ -434,7 +436,7 @@ namespace krb5{
 		LOG << "Kerberos returned on principal retrieval" << kerror << endl;
 		return FALSE;
 	    }
-	    LOG << "Principal is " << me.getName() << endl;
+	    //LOG<< "Principal is " << me.getName() << endl;
 	}
 	return TRUE;
     }
@@ -453,7 +455,7 @@ namespace krb5{
 	}
 	{const krb5::principal& me=*pme;
 	//LOG << "renewing tickets for " << me.getData(0) << "@" << me.getRealm() << endl;
-	LOG << "renewing tickets for " << me.getName() << endl;
+	    //LOG << "renewing tickets for " << me.getName() << endl;
 
 	krb5::creds my_creds(cc.renew_creds());
 	if((kerror=cc.error()))
@@ -504,7 +506,7 @@ namespace krb5{
 		return FALSE;
 	}
 	krb5::principal& me=*pme;
-	LOG << "Princ is " << me.getName() << endl;
+	//LOG << "Princ is " << me.getName() << endl;
 	krb5::ccIter iter=cc.iterator();
 	if((kerror=iter.error()))
 	{
