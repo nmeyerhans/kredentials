@@ -1,4 +1,4 @@
-kredentials (2.0) unstable; urgency=low
+kredentials (2.0~pre1-1) unstable; urgency=low
 
   * Port to KDE 4
   * Update standards compliance to 3.9.2.0.
