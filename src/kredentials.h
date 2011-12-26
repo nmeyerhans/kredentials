@@ -74,7 +74,7 @@ protected:
 	//void paintEvent(QPaintEvent *);
 	void mousePressEvent(QMouseEvent *);
 	void renewOrGetNewTicekts();
-	void timerEvent(QTimerEvent *);
+	void ticketTimerEvent();
 
 private:
 	int secondsToNextRenewal;
@@ -85,6 +85,7 @@ private:
 	KUser *kerberosUser;
 	KAction *renewAct, *reInitAct, *statusAct, *destroyAct, *freshTixAct;
 	QPixmap panelIcon;
+	QTimer *timer;
 	
 	int doNotify;
 
