@@ -17,7 +17,6 @@ install(TARGETS kredentials ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kredentialsui.rc DESTINATION share/apps/kredentials)
 install(FILES  kredentials.desktop DESTINATION share/applnk/Utilities)
 
 kde4_install_icons(${ICON_INSTALL_DIR})
