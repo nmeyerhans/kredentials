@@ -39,8 +39,11 @@
 #include <kpassivepopup.h>
 #include <kpassworddialog.h>
 
+// XXX TEMPORARILY disable dcop stuff while porting to KDE4
+#if 0
 // for DCOP access to screen saver
 #include <dcopref.h>
+#endif
 
 //#include <krb5.h>
 
@@ -188,6 +191,8 @@ void kredentials::tryPassGetTicketsScreenSaverSafe(){
 	// saver unlock will do it, either it will pop-up once
 	// screen saver will be deactivated
 
+// XXX TEMPORARILY disable dcop stuff while porting to KDE4
+#if 0
 	DCOPRef screensaver("kdesktop", "KScreensaverIface");
 	DCOPReply reply = screensaver.call("isBlanked");
 
@@ -198,6 +203,7 @@ void kredentials::tryPassGetTicketsScreenSaverSafe(){
 		// screen saver is running
 		return;
 	}
+#endif
 
 	tryPassGetTickets();
 }
