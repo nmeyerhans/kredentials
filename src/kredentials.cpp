@@ -69,7 +69,7 @@
 #endif /*DEBUG*/
 
 kredentials::kredentials(int notify, int aklog)
-    : KSystemTray(),tixmgr(aklog){
+    : KSystemTrayIcon(),tixmgr(aklog){
     // set the shell's ui resource file
     //setXMLFile("kredentialsui.rc");
 
