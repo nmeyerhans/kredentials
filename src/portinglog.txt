@@ -1,0 +1,6 @@
+Log for qt3to4 on Wed Dec 14 22:23:39 2011. Number of log entries: 3
+In file /home/noahm/src/git/kredentials/src/kredentials.h at line 33 column 20: qpopupmenu.h -> q3popupmenu.h
+In file /home/noahm/src/git/kredentials/src/kredentials.h at line 79 column 11: QPopupMenu -> Q3PopupMenu
+In file /home/noahm/src/git/kredentials/src/kredentials.h: Added the following include directives:
+	#include <QMouseEvent> 	#include <QTimerEvent> 
+
