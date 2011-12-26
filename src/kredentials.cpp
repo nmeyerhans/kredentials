@@ -65,7 +65,7 @@
  */
 #define DEFAULT_RENEWAL_INTERVAL 3600
 #define DEFAULT_WARNING_INTERVAL 86400
-#define LOG kDebug()
+#define LOG kDebugDevNull()
 #endif /*DEBUG*/
 
 kredentials::kredentials(int notify, int aklog)
