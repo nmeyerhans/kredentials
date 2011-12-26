@@ -24,8 +24,6 @@
 #include <qlabel.h>
 #include <qcursor.h>
 #include <qevent.h>
-//Added by qt3to4:
-#include <Q3CString>
 #include <QMouseEvent>
 #include <QTimerEvent>
 #include <kmenu.h>
@@ -142,7 +140,7 @@ bool kredentials::destroyTickets(){
 }
 
 void kredentials::tryPassGetTickets(){
-    Q3CString password;
+    QString password;
     QString prompt = QString("Please give the password for ");
     std::auto_ptr<krb5::principal> osMe(NULL);
     krb5::principal* pme=cc.getPrincipal();
