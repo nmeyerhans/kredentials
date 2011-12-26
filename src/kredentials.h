@@ -26,7 +26,7 @@
 #include <config.h>
 #endif
 
-#include <ksystemtray.h>
+#include <ksystemtrayicon.h>
 #include <qpopupmenu.h>
 #include <qtimer.h>
 #include <qevent.h>
