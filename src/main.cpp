@@ -59,6 +59,7 @@ int main(int argc, char **argv)
 	app.disableSessionManagement();
 	kredentials *k_obj = 0;
 	KMainWindow *kmw = new KMainWindow();
+	kmw->setObjectName("kredentials");
 
 	k_obj = new kredentials();
 	if(args->isSet("inform"))

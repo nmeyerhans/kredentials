@@ -26,14 +26,10 @@
 #include <config.h>
 #endif
 
-#include <ksystemtrayicon.h>
-#include <kmenu.h>
 #include <qtimer.h>
-#include <qevent.h>
-#include <qpixmap.h>
-//Added by qt3to4:
-#include <QMouseEvent>
-#include <QTimerEvent>
+
+#include <kmenu.h>
+#include <ksystemtrayicon.h>
 #include <kuser.h>
 #include <kaction.h>
 
