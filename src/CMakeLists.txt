@@ -11,7 +11,6 @@ kde4_add_executable(kredentials ${kredentials_SRCS})
 target_link_libraries(kredentials ${QT_QTGUI_LIBRARY} QtGui)
 target_link_libraries(kredentials ${KDE4_KDECORE_LIBS} kdeui)
 target_link_libraries(kredentials ${KRB5_LIBRARIES} krb5)
-target_link_libraries(kredentials ${QT_QT3SUPPORT_LIBRARY} Qt3Support)
 
 install(TARGETS kredentials ${INSTALL_TARGETS_DEFAULT_ARGS})
 
