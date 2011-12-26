@@ -115,7 +115,7 @@ namespace krb5{
 
 	context& getCtx() const;
 	const char* getRealm() const;
-	const int getDataLength() const ;
+	int getDataLength() const ;
 	const char* getData(const int i) const; 
 	const std::string getName() const;
     };
