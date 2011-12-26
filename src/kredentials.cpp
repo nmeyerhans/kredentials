@@ -65,7 +65,7 @@
  */
 #define DEFAULT_RENEWAL_INTERVAL 3600
 #define DEFAULT_WARNING_INTERVAL 86400
-#define LOG kDebugDevNull()
+#define LOG kDebug()
 #endif /*DEBUG*/
 
 kredentials::kredentials(int notify, int aklog)
@@ -73,7 +73,7 @@ kredentials::kredentials(int notify, int aklog)
     // set the shell's ui resource file
     //setXMLFile("kredentialsui.rc");
 
-    LOG << "kredentials constructor called" <<kerror<< endl;
+    LOG << "kredentials constructor called " <<kerror;
 
     doNotify = notify;
     doAklog  = aklog;
@@ -102,11 +102,12 @@ kredentials::kredentials(int notify, int aklog)
     //initKerberos();
     hasCurrentTickets();
 	
-    killTimer();
-    startTimer(1000);
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(ticketTimerEvent()));
+    timer->start(1000);
 
-    LOG << "Using Kerberos KRB5CCNAME of " << cc.name() << endl;
-    LOG << "kredentials constructor returning" << endl;
+    //LOG << "Using Kerberos KRB5CCNAME of " << cc.name();
+    //LOG << "kredentials constructor returning";
 
 }
 
@@ -118,7 +119,7 @@ kredentials::~kredentials()
 
 void kredentials::mousePressEvent(QMouseEvent *e)
 {
-    if(e->button() == RightButton)
+    if(e->button() == Qt::RightButton)
     {
 	menu->popup(QCursor::pos());
     }
@@ -137,46 +138,48 @@ bool kredentials::destroyTickets(){
 
 void kredentials::tryPassGetTickets(){
     Q3CString password;
+    QString prompt = QString("Please give the password for ");
     std::auto_ptr<krb5::principal> osMe(NULL);
     krb5::principal* pme=cc.getPrincipal();
-    std::string myName((const char*)i18n("Please give a password for "));
     if(!pme){
 	osMe.reset(osPrincipal());
 	pme=osMe.get();
     }
     if(pme){
-	myName.append(pme->getName());
+	prompt.append(QString(pme->getName().c_str()));
     }else{
-	myName.append("unknown user");
+	prompt.append(QString("unknown user"));
     }
-    killTimers();
-    LOG<<"Getting Pass"<<endl;
+    timer->stop();
+    LOG<<"Getting Pass";
 
-	while (1) // infinite loop until receives a valid password
-	if (KPasswordDialog::getPassword(password,myName.c_str())==KPasswordDialog::Accepted) {
-	std::string pass(password);
-	LOG<<"Getting Creds"<<endl;
+    KPasswordDialog dlg = KPasswordDialog(0, 0, 0);
+    dlg.setPrompt(prompt);
+    if(!dlg.exec()) {
+	KMessageBox::sorry(0, i18n("Never mind..."), 0, 0);
+	return;
+    }
+
+    while (1) // infinite loop until receives a valid password
+    {
+	std::string pass(dlg.password().toAscii());
+	LOG<<"Getting Creds";
 	bool res=passGetCreds(pass);
-	LOG<<"Finished Creds"<<endl;
+	LOG<<"Finished Creds";
 	if(!res){
-	    KMessageBox::sorry(0, i18n("Your password was probably wrong"),
-			       0, 0);
+	    KMessageBox::sorry(0, i18n("Your password was probably wrong"), 0, 0);
 
-	    continue; // I'll try again
+	    return; // I'll try again
 	}else{
 	    hasCurrentTickets();
 	    if( !runAklog() ){
 		KMessageBox::sorry(0, i18n("Unable to run aklog"), 0, 0);
 	    }
-    	startTimer(1000);
-		//that's it
-		return;
+	    timer->start(1000);
+	    //that's it
+	    return;
 	}
-    } else {
-		// user pressed cancel, retry later
-    	startTimer(1000);
-		return;
-	};
+    };
 }
 
 void kredentials::tryPassGetTicketsScreenSaverSafe(){
@@ -193,7 +196,7 @@ void kredentials::tryPassGetTicketsScreenSaverSafe(){
 
 	if (!reply.isValid())
 	{
-		LOG<<"There is some error using DCOP to access screensaver status"<<endl;
+	    LOG<<"There is some error using DCOP to access screensaver status";
 	} else if (reply) {
 		// screen saver is running
 		return;
@@ -208,7 +211,7 @@ void kredentials::tryPassGetTicketsScreenSaverSafe(){
 void kredentials::tryRenewTickets()
 {
     time_t now = time(0);
-    killTimers();
+    timer->stop();
 
     if(!hasCurrentTickets()){
 	tryPassGetTicketsScreenSaverSafe();
@@ -221,14 +224,14 @@ void kredentials::tryRenewTickets()
     else if(tktRenewableExpirationTime < now)
     {
 	KMessageBox::information(0, "Your tickets have outlived their renewable lifetime and can't be renewed.", 0, 0);
-	LOG << "tktRenewableExpirationTime has passed: ";
-	LOG << "tktRenewableExpirationTime = " << 
-	    tktRenewableExpirationTime << ", now = " << now << endl;
+	LOG << "tktRenewableExpirationTime has passed: "
+	    << "tktRenewableExpirationTime = " << 
+	    tktRenewableExpirationTime << ", now = " << now;
 	tryPassGetTicketsScreenSaverSafe();
     }
     else if(!renewTickets())
     {
-	LOG << "renewTickets did not get new tickets" << endl;
+	LOG << "renewTickets did not get new tickets";
 
 
 	if(!hasCurrentTickets()){
@@ -238,7 +241,7 @@ void kredentials::tryRenewTickets()
     else
     {
 	if(doNotify){
-	    KPassivePopup::message("Kerberos tickets have been renewed", 0);
+	    KPassivePopup::message(i18n("Kerberos tickets have been renewed"), this);
 	}
     }
     // restart the timer here, regardless of whether we currently
@@ -251,16 +254,15 @@ void kredentials::tryRenewTickets()
 	    KMessageBox::sorry(0, "Unable to run aklog", 0, 0);
 	}
 		
-	LOG << "WarnTime: " << renewWarningTime << " " << 
-	    doNotify << endl;
+	LOG << "WarnTime: " << renewWarningTime << " " << doNotify;
 	if(doNotify && 
 	   tktRenewableExpirationTime - now < renewWarningTime &&
 	   tktRenewableExpirationTime!=0)
 	{
-	    LOG << "Renew=" << renewWarningFlag << endl;
+	    LOG << "Renew=" << renewWarningFlag;
 	    if(renewWarningFlag == 0) {
 		renewWarningFlag = 1;
-		LOG << "RESET: Renew=" << renewWarningFlag << endl;
+		LOG << "RESET: Renew=" << renewWarningFlag;
 
 		QString msgString = 
 		    QString("Kerberos tickets will permanently expire on ")
@@ -273,7 +275,7 @@ void kredentials::tryRenewTickets()
 	else 
 	{
 	    renewWarningFlag = 0;
-	    LOG << "RESET: Renew=" << renewWarningFlag << endl;
+	    LOG << "RESET: Renew=" << renewWarningFlag;
 	}
     }
     return;
@@ -281,12 +283,11 @@ void kredentials::tryRenewTickets()
 
 
 
-void kredentials::timerEvent(QTimerEvent* //e
-)
+void kredentials::ticketTimerEvent()
 {
 
-    LOG << "timerEvent triggered, secondsToNextRenewal == " 
-	<< secondsToNextRenewal << endl;
+    LOG << "ticketTimerEvent triggered, secondsToNextRenewal == " 
+	<< secondsToNextRenewal;
 
     secondsToNextRenewal--;
     if(secondsToNextRenewal < 0)
@@ -314,7 +315,7 @@ void kredentials::showTicketCache()
 	    const krb5::principal& me=*pme;
 	    if(me.getDataLength()){
 		msgString = QString("Your tickets as ")
-		    +QString(me.getName())+QString(" ");
+		    +QString(me.getName().c_str())+QString(" ");
 	    }else{
 		msgString = QString("Your tickets ");
 	    }
