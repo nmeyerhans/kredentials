@@ -37,7 +37,7 @@
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <kpassivepopup.h>
-#include <kpassdlg.h>
+#include <kpassworddialog.h>
 
 // for DCOP access to screen saver
 #include <dcopref.h>
@@ -52,7 +52,7 @@
 #ifndef NDEBUG
 #define DEFAULT_RENEWAL_INTERVAL 20
 #define DEFAULT_WARNING_INTERVAL 3600
-#define LOG kdDebug()
+#define LOG kDebug()
 #else
 /* These intervals really need to be configurable.  In some locations
  * new tickets need to be obtained every day, while others grant
@@ -62,7 +62,7 @@
  */
 #define DEFAULT_RENEWAL_INTERVAL 3600
 #define DEFAULT_WARNING_INTERVAL 86400
-#define LOG kndDebug()
+#define LOG kDebugDevNull()
 #endif /*DEBUG*/
 
 kredentials::kredentials(int notify, int aklog)
