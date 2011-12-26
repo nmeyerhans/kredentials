@@ -8,22 +8,12 @@ set(kredentials_SRCS main.cpp kredentials.cpp krb5_wrap.cpp)
 
 kde4_add_executable(kredentials ${kredentials_SRCS})
 
+target_link_libraries(kredentials ${QT_QTGUI_LIBRARY} QtGui)
 target_link_libraries(kredentials ${KDE4_KDECORE_LIBS} kdeui)
+target_link_libraries(kredentials ${KRB5_LIBRARIES} krb5)
+target_link_libraries(kredentials ${QT_QT3SUPPORT_LIBRARY} Qt3Support)
 
 install(TARGETS kredentials ${INSTALL_TARGETS_DEFAULT_ARGS})
-
-
-########### next target ###############
-
-set(krbcheck_SRCS krbcheck.cpp krb5_wrap.cpp)
-
-if(KDE4_BUILD_TESTS)
-
-kde4_add_executable(krbcheck ${krbcheck_SRCS})
-
-target_link_libraries(krbcheck ${KDE4_KDECORE_LIBS} kdeui)
-
-endif(KDE4_BUILD_TESTS)
 
 ########### install files ###############
 
