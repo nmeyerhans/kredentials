@@ -8,12 +8,12 @@ include(KDE4Defaults)
 
 include(MacroLibrary)
 
-include(ConvenienceLibs.cmake)
+# include(ConvenienceLibs.cmake)
 
-include(ManualStuff.cmake)
+# include(ManualStuff.cmake)
 
-include(ConfigureChecks.cmake)
-
+# include(ConfigureChecks.cmake)
+add_subdirectory(src)
 include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(TOPSUBDIRS)")
