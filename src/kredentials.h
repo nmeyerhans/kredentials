@@ -1,6 +1,8 @@
 /*
  * Copyright 2004,2006,2007,2011 by the Massachusetts Institute of
- * Technology.  All Rights Reserved.
+ * Technology.
+ * Copyright 2007 Hai Zaar <haizaar@gmail.com>
+ * All Rights Reserved.
  *
  * Permission to use, copy, modify, and distribute this software and
  * its documentation for any purpose and without fee is hereby
