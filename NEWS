@@ -1,1 +1,6 @@
- 
+Kredentials is finally ported to KDE 4!  The visible changes should be
+fairly minimal.
+
+The 0.9.x branch will continue to serve as a platform for KDE 3
+support, if there's interest in it.  The 2.0 branch and beyond will be
+for KDE 4 only.
