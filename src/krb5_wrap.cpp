@@ -427,7 +427,7 @@ namespace krb5{
 	    LOG << "Kerberos returned on ccache init" << kerror << endl;
 	    return FALSE;
 	}
-	// LOG<< "Set cc to " << cc.name();
+	LOG<< "Set cc to " << cc.name().c_str();
 	const krb5::principal* pme=cc.getPrincipal();
 	if(pme){
 	    const krb5::principal& me=*pme; 
@@ -436,7 +436,7 @@ namespace krb5{
 		LOG << "Kerberos returned on principal retrieval" << kerror << endl;
 		return FALSE;
 	    }
-	    //LOG<< "Principal is " << me.getName() << endl;
+	    LOG<< "Principal is " << me.getName().c_str() << endl;
 	}
 	return TRUE;
     }
@@ -454,7 +454,8 @@ namespace krb5{
 	    return FALSE;
 	}
 	{const krb5::principal& me=*pme;
-	//LOG << "renewing tickets for " << me.getData(0) << "@" << me.getRealm() << endl;
+	    LOG << "renewing tickets for " << me.getData(0) << "@" 
+		<< me.getRealm() << endl;
 	    //LOG << "renewing tickets for " << me.getName() << endl;
 
 	krb5::creds my_creds(cc.renew_creds());
@@ -506,7 +507,7 @@ namespace krb5{
 		return FALSE;
 	}
 	krb5::principal& me=*pme;
-	//LOG << "Princ is " << me.getName() << endl;
+	LOG << "Princ is " << me.getName().c_str() << endl;
 	krb5::ccIter iter=cc.iterator();
 	if((kerror=iter.error()))
 	{
@@ -514,14 +515,14 @@ namespace krb5{
 		authenticated = 0;
 		return FALSE;
 	}
-	LOG<<"Start iter"<<endl;
+	LOG<<"Start iter";
 	while (!(iter.error())){
 	    const krb5::creds& creds=*iter;
 	    const principal* pserver=NULL;
 	    if(!iter.error())
 		pserver=creds.getServer();
 	    else{
-		LOG<< "Error: Iterator returned no creds"<<endl;
+		LOG<< "Error: Iterator returned no creds";
 		break;
 	    }
 	    if(pserver){
@@ -539,7 +540,7 @@ namespace krb5{
 	    iter++;
 	}
 	noTix == 0 ? authenticated = 1 : authenticated = 0;
-	LOG << "hasCurrentTickets set authenticated=" << authenticated << endl;
+	LOG << "hasCurrentTickets set authenticated=" << authenticated;
 	return authenticated;
     };
 
@@ -552,7 +553,7 @@ namespace krb5{
 	    initKerberos();
 	    osMe.reset(osPrincipal());
 	    if(!(pme=osMe.get())){
-		LOG<<"Could not get Principal from os"<<endl;
+		LOG<<"Could not get Principal from os";
 		kerror=-1;
 		return FALSE;
 	    };
@@ -567,12 +568,12 @@ namespace krb5{
 					     0,
 					 NULL);
 	if(kerror){
-	    LOG<<"Error on passGetCreds "<<kerror<<endl;
+	    LOG<<"Error on passGetCreds "<<kerror;
 	    return FALSE;
 	}
 	cc.store(my_creds);
 	if((kerror=cc.error())){
-	    LOG<<"Error on storing creds in passGetCreds "<<kerror<<endl;
+	    LOG<<"Error on storing creds in passGetCreds "<<kerror;
 	    return FALSE;
 	}
 	return TRUE;
@@ -581,12 +582,12 @@ namespace krb5{
     bool tixmgr::runAklog(){
 	if(!doAklog) return TRUE;
 	if(authenticated){
-		LOG << "Calling aklog" << endl;
+	    LOG << "Calling aklog";
 		int ret = system("aklog");
 		if(ret==-1)
-		    LOG<<"Unable to run aklog"<<endl;
+		    LOG<<"Unable to run aklog";
 		if(ret>0)
-		    LOG<<"aklog failed with"<<ret<<endl;
+		    LOG<<"aklog failed with"<<ret;
 		if( ret != 0 )
 		    return FALSE;
 		else
@@ -599,12 +600,12 @@ namespace krb5{
     bool tixmgr::runUnlog(){
 	if(!doAklog) return TRUE;
 	if(authenticated){
-		LOG << "Calling unlog" << endl;
+	    LOG << "Calling unlog";
 		int ret = system("unlog");
 		if(ret==-1)
-		    LOG<<"Unable to run unlog"<<endl;
+		    LOG<<"Unable to run unlog";
 		if(ret>0)
-		    LOG<<"unlog failed with"<<ret<<endl;
+		    LOG<<"unlog failed with"<<ret;
 		if( ret != 0 )
 		    return FALSE;
 		else
@@ -623,14 +624,14 @@ namespace krb5{
 	    ret=new principal(ctx,pOsMe,TRUE);
 	    krb5_free_principal(ctx(),pOsMe);
 	    if(kerror){
-		LOG<<"Parsing user name failed"<<endl;
+		LOG<<"Parsing user name failed";
 		delete ret;
 		return NULL;
 	    }
 	    cc.setPrincipal(*ret);
 	    return ret;
 	}else{
-	    LOG<< "Could not get user name"<<endl;
+	    LOG<< "Could not get user name";
 	    return NULL;
 	}
     }
