@@ -36,7 +36,6 @@
 #include <QTimerEvent>
 #include <kuser.h>
 #include <kaction.h>
-#include <kdialogbase.h>
 
 #include <time.h>
 #include "krb5_wrap.h"
@@ -45,7 +44,7 @@
  * @author Noah Meyerhans <noahm@csail.mit.edu>
  * @version 0.9.2
  */
-class kredentials : public KSystemTray,public krb5::tixmgr
+class kredentials : public KSystemTrayIcon,public krb5::tixmgr
 {
     Q_OBJECT
 public:
@@ -77,8 +76,6 @@ protected:
 	void renewOrGetNewTicekts();
 	void timerEvent(QTimerEvent *);
 
-	KDialogBase *noAuthDlg;
-	
 private:
 	int secondsToNextRenewal;
         int renewWarningFlag;

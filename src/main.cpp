@@ -24,36 +24,36 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
+#include <stdio.h>
 
-static const char description[] =
-    I18N_NOOP("Monitor and update authentication tokens");
-
-static const char version[] = "0.9.2";
-
-static KCmdLineOptions options[] =
-{
-	{ "i", 0, 0},
-	{ "inform", "Inform the user when credentials are renewed", 0},
-	{ "d", 0, 0},
-	{ "disable-aklog", "Don't run aklog to update AFS tokens when renewing Kerberos tickets", 0},
-	KCmdLineLastOption
-};
+static const char version[] = "2.0-alpha";
 
 int main(int argc, char **argv)
 {
-	KAboutData about("kredentials", I18N_NOOP("kredentials"), version, description,
-					KAboutData::License_Custom, "(C) 2004 Noah Meyerhans", 0, 0, "noahm@csail.mit.edu");
-	about.addAuthor( "Noah Meyerhans", 0, "noahm@csail.mit.edu" );
-	KCmdLineArgs::init(argc, argv, &about);
-	KCmdLineArgs::addCmdLineOptions( options );
-	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    KAboutData about("kredentials",
+		     "kredentials",
+		     ki18n("kredentials"),
+		     version,
+		     ki18n("Monitor and update authentication tokens"),
+		     KAboutData::License_Custom, 
+		     ki18n("(C) 2004 Noah Meyerhans"));
+    about.addAuthor( ki18n("Noah Meyerhans"), ki18n("developer"), 
+		     "noahm@csail.mit.edu", 0 );
+    KCmdLineArgs::init(argc, argv, &about);
+    KCmdLineOptions options;
+    options.add("i").add("inform", 
+			 ki18n("Inform the user when credentials are renewed"));
+    options.add("d").add("disable-aklog", 
+			 ki18n("Don't run aklog after renewing Kerberos tickets"));
+    KCmdLineArgs::addCmdLineOptions( options );
+    KUniqueApplication::addCmdLineOptions();
 
 	if (!KUniqueApplication::start()) {
 	    fprintf(stderr, "Kredentials is already running!\n");
 	    exit(0);
 	}
 
-
+	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 	KUniqueApplication app;
 	app.disableSessionManagement();
 	kredentials *mainWin = 0;
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 		mainWin->setDoAklog(false);
 	}
 	
-	app.setMainWidget( mainWin );
+	//app.setMainWidget( mainWin );
 	mainWin->show();
 
 	//args->clear();

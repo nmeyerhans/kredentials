@@ -80,34 +80,29 @@ kredentials::kredentials(int notify, int aklog)
     renewWarningTime = DEFAULT_WARNING_INTERVAL;
     secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
     renewWarningFlag = 0;
-    this->setPixmap(this->loadIcon("kredentials"));
+    this->setIcon(this->loadIcon("kredentials"));
     menu = new Q3PopupMenu();
-    renewAct = new KAction(i18n("&Renew credentials"), "1rightarrow", 0,
-			   this, SLOT(tryRenewTickets()), 
-			   actionCollection(), "renew");
-    renewAct->plug(menu);
+    // renewAct = new KAction(i18n("&Renew credentials"), "1rightarrow", 0,
+    // 			   this, SLOT(tryRenewTickets()), 
+    // 			   actionCollection(), "renew");
+    renewAct = new KAction(KIcon("1rightarrow"), i18n("Renew credentials"), this);
+    menu->addAction(renewAct);
 
-    freshTixAct = new KAction(i18n("&Get new credentials"), "", 0,
-			      this, SLOT(tryPassGetTickets()), 
-			      actionCollection(), "new");
-    freshTixAct->plug(menu);
+    freshTixAct = new KAction(KIcon(""), i18n("&Get new credentials"), this);
+    menu->addAction(freshTixAct);
 	
-    statusAct = new KAction(i18n("&Credential Status"), "", 0, 
-			    this, SLOT(showTicketCache()), 
-			    actionCollection(), "status");
-    statusAct->plug(menu);
+    statusAct = new KAction(KIcon(""), i18n("&Credential Status"), this);
+    menu->addAction(statusAct);
 
-    destroyAct = new KAction(i18n("&Destroy credentials"), "", 0,
-			     this, SLOT(destroyTickets()), 
-			     actionCollection(), "destroy");
-    destroyAct->plug(menu);
+    destroyAct = new KAction(KIcon(""), i18n("&Destroy credentials"), this);
+    menu->addAction(destroyAct);
 
     menu->insertItem(SmallIcon("exit"), i18n("Quit"), kapp, SLOT(quit()));
 		
     //initKerberos();
     hasCurrentTickets();
 	
-    killTimers();
+    killTimer();
     startTimer(1000);
 
     LOG << "Using Kerberos KRB5CCNAME of " << cc.name() << endl;
