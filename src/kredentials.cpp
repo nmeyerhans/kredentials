@@ -28,7 +28,7 @@
 #include <Q3CString>
 #include <QMouseEvent>
 #include <QTimerEvent>
-#include <Q3PopupMenu>
+#include <kmenu.h>
 
 #include <kapplication.h>
 #include <kmainwindow.h>
@@ -81,24 +81,29 @@ kredentials::kredentials(int notify, int aklog)
     secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
     renewWarningFlag = 0;
     this->setIcon(this->loadIcon("kredentials"));
-    menu = new Q3PopupMenu();
-    // renewAct = new KAction(i18n("&Renew credentials"), "1rightarrow", 0,
-    // 			   this, SLOT(tryRenewTickets()), 
-    // 			   actionCollection(), "renew");
+    menu = new KMenu();
+
     renewAct = new KAction(KIcon("1rightarrow"), i18n("Renew credentials"), this);
+    connect(renewAct, SIGNAL(triggered()), this, SLOT(tryRenewTickets()));
     menu->addAction(renewAct);
 
     freshTixAct = new KAction(KIcon(""), i18n("&Get new credentials"), this);
+    connect(freshTixAct, SIGNAL(triggered()), this, SLOT(tryPassGetTickets()));
     menu->addAction(freshTixAct);
 	
     statusAct = new KAction(KIcon(""), i18n("&Credential Status"), this);
+    connect(statusAct, SIGNAL(triggered()), this, SLOT(showTicketCache()));
     menu->addAction(statusAct);
 
     destroyAct = new KAction(KIcon(""), i18n("&Destroy credentials"), this);
     menu->addAction(destroyAct);
 
-    menu->insertItem(SmallIcon("exit"), i18n("Quit"), kapp, SLOT(quit()));
+    quitAct = new KAction(KIcon(""), i18n("Quit"), this);
+    connect(quitAct, SIGNAL(triggered()), kapp, SLOT(quit()));
+    menu->addAction(quitAct);
 		
+    setContextMenu(menu);
+
     //initKerberos();
     hasCurrentTickets();
 	
