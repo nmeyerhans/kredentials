@@ -12,5 +12,5 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: openafs-krb5
 Description: KDE taskbar applet to update kerberos/AFS credentials
  kredentials is a taskbar applet to periodically renew kerberos
- tickets and AFS tokens.  Although targetted for KDE, it is expected
+ tickets and AFS tokens.  Although targeted for KDE, it is expected
  to be fully compatible with other desktop environments.
