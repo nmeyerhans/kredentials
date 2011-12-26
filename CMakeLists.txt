@@ -8,7 +8,6 @@ find_package(KDE4 REQUIRED)
 find_package(Kerberos5 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
-add_definitions (-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS)
 add_definitions(-DKDE_DEFAULT_DEBUG_AREA=9876)
 
 include(KDE4Defaults)
