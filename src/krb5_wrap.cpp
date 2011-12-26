@@ -259,7 +259,7 @@ namespace krb5{
 		return _principal->realm.data;
 #endif
     }
-    const int principal::getDataLength() const{
+    int principal::getDataLength() const{
 	if(_principal)
 #ifdef HEIMDAL
 		return _principal->name.name_string.len;
