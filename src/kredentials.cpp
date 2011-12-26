@@ -255,7 +255,7 @@ void kredentials::tryRenewTickets()
     // have tickets now or not.  The user may get tickets before
     // the next timeout, and we need to be able to renew them
     secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
-    startTimer(1000);
+    timer->start(1000);
     if(authenticated > 0){
 	if( !runAklog() ){
 	    KMessageBox::sorry(0, "Unable to run aklog", 0, 0);
