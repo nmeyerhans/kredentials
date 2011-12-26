@@ -1,6 +1,7 @@
 /*
- * Copyright 2004 by the Massachusetts Institute of Technology.
- * All Rights Reserved.
+ * Copyright 2004,2006,2011 by the Massachusetts Institute of
+ * Technology.  All Rights Reserved.
+ * Copyright 2007, Martin Ginkel <mginkel@mpi-magdeburg.mpg.de>
  *
  * Permission to use, copy, modify, and distribute this software and
  * its documentation for any purpose and without fee is hereby
