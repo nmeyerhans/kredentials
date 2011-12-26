@@ -24,6 +24,11 @@
 #include <qlabel.h>
 #include <qcursor.h>
 #include <qevent.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <QMouseEvent>
+#include <QTimerEvent>
+#include <Q3PopupMenu>
 
 #include <kapplication.h>
 #include <kmainwindow.h>
@@ -73,7 +78,7 @@ kredentials::kredentials(int notify, int aklog)
     secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
     renewWarningFlag = 0;
     this->setPixmap(this->loadIcon("kredentials"));
-    menu = new QPopupMenu();
+    menu = new Q3PopupMenu();
     renewAct = new KAction(i18n("&Renew credentials"), "1rightarrow", 0,
 			   this, SLOT(tryRenewTickets()), 
 			   actionCollection(), "renew");
@@ -133,7 +138,7 @@ bool kredentials::destroyTickets(){
 }
 
 void kredentials::tryPassGetTickets(){
-    QCString password;
+    Q3CString password;
     std::auto_ptr<krb5::principal> osMe(NULL);
     krb5::principal* pme=cc.getPrincipal();
     std::string myName((const char*)i18n("Please give a password for "));
