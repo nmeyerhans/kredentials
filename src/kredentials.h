@@ -27,7 +27,7 @@
 #endif
 
 #include <ksystemtrayicon.h>
-#include <q3popupmenu.h>
+#include <kmenu.h>
 #include <qtimer.h>
 #include <qevent.h>
 #include <qpixmap.h>
@@ -81,9 +81,10 @@ private:
         int renewWarningFlag;
         int renewWarningTime;
 
-	Q3PopupMenu *menu;
+	KMenu *menu;
 	KUser *kerberosUser;
 	KAction *renewAct, *reInitAct, *statusAct, *destroyAct, *freshTixAct;
+	KAction *quitAct;
 	QPixmap panelIcon;
 	QTimer *timer;
 	
