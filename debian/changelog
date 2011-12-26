@@ -1,3 +1,11 @@
+kredentials (2.0) unstable; urgency=low
+
+  * Port to KDE 4
+  * Update standards compliance to 3.9.2.0.
+  * Switch to cdbs and pkg-kde-tools for building.
+
+ -- Noah Meyerhans <noahm@debian.org>  Mon, 26 Dec 2011 00:29:04 -0800
+
 kredentials (0.9.5) unstable; urgency=low
 
   * Change the symbol we look for when checking for the presence of 
