@@ -79,28 +79,21 @@ kredentials::kredentials(int notify, int aklog)
     secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
     renewWarningFlag = 0;
     this->setIcon(this->loadIcon("kredentials"));
-    menu = new KMenu();
 
     renewAct = new KAction(KIcon("1rightarrow"), i18n("Renew credentials"), this);
     connect(renewAct, SIGNAL(triggered()), this, SLOT(tryRenewTickets()));
-    menu->addAction(renewAct);
+    contextMenu()->addAction(renewAct);
 
     freshTixAct = new KAction(KIcon(""), i18n("&Get new credentials"), this);
     connect(freshTixAct, SIGNAL(triggered()), this, SLOT(tryPassGetTickets()));
-    menu->addAction(freshTixAct);
+    contextMenu()->addAction(freshTixAct);
 	
     statusAct = new KAction(KIcon(""), i18n("&Credential Status"), this);
     connect(statusAct, SIGNAL(triggered()), this, SLOT(showTicketCache()));
-    menu->addAction(statusAct);
+    contextMenu()->addAction(statusAct);
 
     destroyAct = new KAction(KIcon(""), i18n("&Destroy credentials"), this);
-    menu->addAction(destroyAct);
-
-    quitAct = new KAction(KIcon(""), i18n("Quit"), this);
-    connect(quitAct, SIGNAL(triggered()), kapp, SLOT(quit()));
-    menu->addAction(quitAct);
-		
-    setContextMenu(menu);
+    contextMenu()->addAction(destroyAct);
 
     //initKerberos();
     hasCurrentTickets();
@@ -118,15 +111,6 @@ kredentials::~kredentials()
 {
 }
 
-
-
-void kredentials::mousePressEvent(QMouseEvent *e)
-{
-    if(e->button() == Qt::RightButton)
-    {
-	menu->popup(QCursor::pos());
-    }
-}
 
 bool kredentials::destroyTickets(){
     bool res=FALSE;

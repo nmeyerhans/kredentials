@@ -62,9 +62,7 @@ public:
 	void setDoAklog(int);
 	
 protected slots:
-    //int renewTickets();
 	void tryRenewTickets();
-    // void hasCurrentTickets();
 	void showTicketCache();
 	void tryPassGetTickets();
 	void tryPassGetTicketsScreenSaverSafe();
@@ -72,8 +70,6 @@ protected slots:
 	void ticketTimerEvent();
 	
 protected:
-	//void paintEvent(QPaintEvent *);
-	void mousePressEvent(QMouseEvent *);
 	void renewOrGetNewTicekts();
 
 private:
@@ -81,7 +77,6 @@ private:
         int renewWarningFlag;
         int renewWarningTime;
 
-	KMenu *menu;
 	KUser *kerberosUser;
 	KAction *renewAct, *reInitAct, *statusAct, *destroyAct, *freshTixAct;
 	KAction *quitAct;
