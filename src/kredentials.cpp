@@ -20,7 +20,6 @@
  */
 
 #include "kredentials.h"
-#include "passwddlg.h"
 
 #include <qlabel.h>
 #include <qcursor.h>
