@@ -69,12 +69,12 @@ protected slots:
 	void tryPassGetTickets();
 	void tryPassGetTicketsScreenSaverSafe();
 	bool destroyTickets();
+	void ticketTimerEvent();
 	
 protected:
 	//void paintEvent(QPaintEvent *);
 	void mousePressEvent(QMouseEvent *);
 	void renewOrGetNewTicekts();
-	void ticketTimerEvent();
 
 private:
 	int secondsToNextRenewal;
