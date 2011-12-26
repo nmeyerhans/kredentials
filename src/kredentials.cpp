@@ -143,7 +143,7 @@ void kredentials::tryPassGetTickets(){
     KPasswordDialog *dlg = new KPasswordDialog(NULL, 0);
     dlg->setPrompt(prompt);
     if(!dlg->exec()) {
-	KMessageBox::sorry(0, i18n("Never mind..."), 0, 0);
+	// User hit cancel, or something
 	return;
     }
 
@@ -230,7 +230,10 @@ void kredentials::tryRenewTickets()
     else
     {
 	if(doNotify){
-	    KPassivePopup::message(i18n("Kerberos tickets have been renewed"), this);
+	    showMessage("kredentials",
+			"Successfully renewed Kerberos tickets",
+			QSystemTrayIcon::Information,
+			3000);
 	}
     }
     // restart the timer here, regardless of whether we currently
