@@ -24,7 +24,8 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
-#include <stdio.h>
+#include <kdebug.h>
+#include <kmainwindow.h>
 
 static const char version[] = "2.0-alpha";
 
@@ -49,31 +50,28 @@ int main(int argc, char **argv)
     KUniqueApplication::addCmdLineOptions();
 
 	if (!KUniqueApplication::start()) {
-	    fprintf(stderr, "Kredentials is already running!\n");
+	    kError() << "Kredentials is already running!";
 	    exit(0);
 	}
 
 	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 	KUniqueApplication app;
 	app.disableSessionManagement();
-	kredentials *mainWin = 0;
+	kredentials *k_obj = 0;
+	KMainWindow *kmw = new KMainWindow();
 
-	mainWin = new kredentials();
+	k_obj = new kredentials();
 	if(args->isSet("inform"))
 	{
-		mainWin->setDoNotify(true);
+	    k_obj->setDoNotify(true);
 	}
 	if(args->isSet("disable-aklog"))
 	{
-		mainWin->setDoAklog(false);
+		k_obj->setDoAklog(false);
 	}
-	
-	//app.setMainWidget( mainWin );
-	mainWin->show();
 
-	//args->clear();
+	k_obj->show();
 
-    // mainWin has WDestructiveClose flag by default, so it will delete itself.
     return app.exec();
 }
 
