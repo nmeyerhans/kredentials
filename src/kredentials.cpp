@@ -106,8 +106,8 @@ kredentials::kredentials(int notify, int aklog)
     connect(timer, SIGNAL(timeout()), this, SLOT(ticketTimerEvent()));
     timer->start(1000);
 
-    //LOG << "Using Kerberos KRB5CCNAME of " << cc.name();
-    //LOG << "kredentials constructor returning";
+    LOG << "Using Kerberos KRB5CCNAME of " << cc.name().c_str();
+    LOG << "kredentials constructor returning";
 
 }
 
