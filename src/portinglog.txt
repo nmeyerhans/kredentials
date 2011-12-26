@@ -4,3 +4,12 @@ In file /home/noahm/src/git/kredentials/src/kredentials.h at line 79 column 11: 
 In file /home/noahm/src/git/kredentials/src/kredentials.h: Added the following include directives:
 	#include <QMouseEvent> 	#include <QTimerEvent> 
 
+Log for qt3to4 on Wed Dec 14 22:28:39 2011. Number of log entries: 3
+In file /home/noahm/src/git/kredentials/src/kredentials.cpp at line 76 column 25: QPopupMenu -> Q3PopupMenu
+In file /home/noahm/src/git/kredentials/src/kredentials.cpp at line 136 column 12: QCString -> Q3CString
+In file /home/noahm/src/git/kredentials/src/kredentials.cpp: Added the following include directives:
+	#include <Q3CString> 	#include <QMouseEvent> 	#include <QTimerEvent> 	#include <Q3PopupMenu> 
+
+Log for qt3to4 on Wed Dec 14 22:28:59 2011. Number of log entries: 1
+No changes made to file /home/noahm/src/git/kredentials/src/main.cpp
+
