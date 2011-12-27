@@ -14,11 +14,6 @@ include(KDE4Defaults)
 
 include(MacroLibrary)
 
-# include(ConvenienceLibs.cmake)
-
-# include(ManualStuff.cmake)
-
-# include(ConfigureChecks.cmake)
 add_subdirectory(src)
 add_subdirectory(cmake)
 include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
