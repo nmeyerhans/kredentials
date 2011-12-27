@@ -1,1 +1,11 @@
+Kredentials is a small applet for maintaining Kerberos tickets for the
+duration of their renewable lifetime. It can also optionally keep AFS
+tokens up-to-date.
 
+See NEWS, ChangeLog, and INSTALL for more information about the
+development and usage of kredentials.
+
+Kredentials was written by Noah Meyerhans <noahm@csail.mit.edu> for the
+Massachusetts Institute of Technology Computer Science and Artificial
+Intelligence Lab.  See the AUTHORS file for for other contributed.
+Refer to the COPYING file for copyright terms and licensing.
