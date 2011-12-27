@@ -62,7 +62,7 @@ kredentials::kredentials(int notify, int aklog)
     // set the shell's ui resource file
     //setXMLFile("kredentialsui.rc");
 
-    LOG << "kredentials constructor called " <<kerror;
+    LOG << "kredentials constructor called" << kerror;
 
     doNotify = notify;
     doAklog  = aklog;
@@ -93,7 +93,7 @@ kredentials::kredentials(int notify, int aklog)
     connect(timer, SIGNAL(timeout()), this, SLOT(ticketTimerEvent()));
     timer->start(1000);
 
-    LOG << "Using Kerberos KRB5CCNAME of " << cc.name().c_str();
+    LOG << "Using Kerberos KRB5CCNAME of" << cc.name().c_str();
     LOG << "kredentials constructor returning";
 
 }
@@ -129,7 +129,7 @@ void kredentials::tryPassGetTickets(){
 	prompt.append(QString("unknown user"));
     }
     timer->stop();
-    LOG<<"Getting Pass";
+    LOG << "Getting Pass";
 
     KPasswordDialog *dlg = new KPasswordDialog(NULL, 0);
     dlg->setPrompt(prompt);
@@ -141,9 +141,9 @@ void kredentials::tryPassGetTickets(){
     while (1) // infinite loop until receives a valid password
     {
 	std::string pass(dlg->password().toAscii());
-	LOG<<"Getting Creds";
+	LOG << "Getting Creds";
 	bool res=passGetCreds(pass);
-	LOG<<"Finished Creds";
+	LOG << "Finished Creds";
 	if(!res){
 	    KMessageBox::sorry(0, i18n("Your password was probably wrong"), 0, 0);
 
@@ -176,7 +176,7 @@ void kredentials::tryPassGetTicketsScreenSaverSafe(){
 
 	if (!reply.isValid())
 	{
-	    LOG<<"There is some error using DCOP to access screensaver status";
+	    LOG << "There is some error using DCOP to access screensaver status";
 	} else if (reply) {
 		// screen saver is running
 		return;
@@ -204,7 +204,7 @@ void kredentials::tryRenewTickets()
     else if(tktRenewableExpirationTime < now)
     {
 	KMessageBox::information(0, "Your tickets have outlived their renewable lifetime and can't be renewed.", 0, 0);
-	LOG << "tktRenewableExpirationTime has passed: "
+	LOG << "tktRenewableExpirationTime has passed:"
 	    << "tktRenewableExpirationTime = " << 
 	    tktRenewableExpirationTime << ", now = " << now;
 	tryPassGetTicketsScreenSaverSafe();
@@ -237,7 +237,7 @@ void kredentials::tryRenewTickets()
 	    KMessageBox::sorry(0, "Unable to run aklog", 0, 0);
 	}
 		
-	LOG << "WarnTime: " << renewWarningTime << " " << doNotify;
+	LOG << "WarnTime: " << renewWarningTime << doNotify;
 	if(doNotify && 
 	   tktRenewableExpirationTime - now < renewWarningTime &&
 	   tktRenewableExpirationTime!=0)
@@ -269,7 +269,7 @@ void kredentials::tryRenewTickets()
 void kredentials::ticketTimerEvent()
 {
 
-    LOG << "ticketTimerEvent triggered, secondsToNextRenewal == " 
+    LOG << "ticketTimerEvent triggered, secondsToNextRenewal ==" 
 	<< secondsToNextRenewal;
 
     secondsToNextRenewal--;
