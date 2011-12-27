@@ -270,13 +270,19 @@ namespace krb5{
 	else
 	    return 0;
     }
-    const char* principal::getData(const int i) const{
-	if((i>=0)&&(i < getDataLength() ))
+    const std::string principal::getData(const int i) const{
+	if((i>=0)&&(i < getDataLength() )) {
 #ifdef HEIMDAL
 		return _principal->name.name_string.val[i];
 #else
-		return (char *)(_principal->data[i].data);
+		// Kerberos internal strings aren't null-terminated, so we can't
+		// return them directly. Instead, copy the string data in a 
+		// new std::string object and take the string length into account.
+		// return (char *)(_principal->data[i].data);
+		return string(_principal->data[i].data, _principal->data[i].length);
+
 #endif
+    }
 	else
 	    return NULL;
     }
@@ -455,9 +461,7 @@ namespace krb5{
 	    return FALSE;
 	}
 	{const krb5::principal& me=*pme;
-	    LOG << "renewing tickets for " << me.getData(0) << "@" 
-		<< me.getRealm() << endl;
-	    //LOG << "renewing tickets for " << me.getName() << endl;
+	    LOG << "renewing tickets for " << me.getName().c_str();
 
 	krb5::creds my_creds(cc.renew_creds());
 	if((kerror=cc.error()))
