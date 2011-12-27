@@ -1,3 +1,10 @@
+kredentials (2.0-pre2)
+
+    * Install .desktop to XDG_APPS_INSTALL_DIR
+    * Add X-KDE-StartupNotify=false to .desktop
+
+ -- Noah Meyerhans <noahm@debian.org>  Tue, 27 Dec 2011 10:42:00 -0800
+	
 kredentials (2.0-pre1) unstable; urgency=low
 
   * Port to KDE 4
@@ -6,7 +13,7 @@ kredentials (2.0-pre1) unstable; urgency=low
 
 kredentials (0.9.5) unstable; urgency=low
 
-  * Change the symbol we look for when checking for the presence of 
+  * Change the symbol we look for when checking for the presence of
     -lkrb5 in the configure script. (Closes: #571393)
 
  -- Noah Meyerhans <noahm@debian.org>  Wed, 24 Mar 2010 00:50:40 -0700
