@@ -3,8 +3,9 @@ kredentials (2.0~pre1-1) unstable; urgency=low
   * Port to KDE 4
   * Update standards compliance to 3.9.2.0.
   * Switch to cdbs and pkg-kde-tools for building.
+  * Switch to a 3.0 (quilt) source format, instead of debian-native.
 
- -- Noah Meyerhans <noahm@debian.org>  Mon, 26 Dec 2011 00:29:04 -0800
+ -- Noah Meyerhans <noahm@debian.org>  Mon, 26 Dec 2011 00:57:53 -0800
 
 kredentials (0.9.5) unstable; urgency=low
 
