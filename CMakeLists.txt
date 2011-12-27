@@ -1,3 +1,7 @@
+# Some build reminders:
+# Run cmake with "-D CMAKE_BUILD_TYPE=Debug" to generate a debug build
+# Run make with "VERBOSE=1" to see the compiler command line
+
 set(KREDENTIALS_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${KREDENTIALS_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
@@ -17,9 +21,5 @@ include(MacroLibrary)
 add_subdirectory(src)
 add_subdirectory(cmake)
 include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
-
-### UNCOMMENT the following to enable debug builds
-# remove_definitions(-DNDEBUG -DQT_NO_DEBUG)
-# add_definitions(-DDEBUG)
 
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(TOPSUBDIRS)")
