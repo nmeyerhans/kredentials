@@ -16,6 +16,6 @@ install(TARGETS kredentials ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kredentials.desktop DESTINATION share/applnk/Utilities)
+install(FILES  kredentials.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
 kde4_install_icons(${ICON_INSTALL_DIR})
