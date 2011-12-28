@@ -1,8 +1,9 @@
 kredentials (2.0~pre2-1) unstable; urgency=low
 
   * New upstream release fixes some installation and .desktop issues.
+  * Add cmake to build-depends (Closes: #653462)
 
- -- Noah Meyerhans <noahm@debian.org>  Tue, 27 Dec 2011 10:45:56 -0800
+ -- Noah Meyerhans <noahm@debian.org>  Wed, 28 Dec 2011 09:01:25 -0800
 
 kredentials (2.0~pre1-1) unstable; urgency=low
 

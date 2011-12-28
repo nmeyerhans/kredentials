@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Noah Meyerhans <noahm@debian.org>
 Standards-Version: 3.9.2.0
 Build-Depends: debhelper (>= 7), libkrb5-dev, kdelibs5-dev,
- kdelibs5-dev, cdbs, pkg-kde-tools
+ kdelibs5-dev, cdbs, pkg-kde-tools, cmake
 
 Package: kredentials
 Architecture: any
