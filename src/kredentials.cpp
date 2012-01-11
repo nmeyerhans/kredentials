@@ -84,9 +84,9 @@ kredentials::kredentials(int notify, int aklog)
     contextMenu()->addAction(statusAct);
 
     destroyAct = new KAction(KIcon(""), i18n("&Destroy credentials"), this);
+    connect(destroyAct, SIGNAL(triggered()), this, SLOT(destroyTickets()));
     contextMenu()->addAction(destroyAct);
 
-    //initKerberos();
     hasCurrentTickets();
 	
     timer = new QTimer(this);
