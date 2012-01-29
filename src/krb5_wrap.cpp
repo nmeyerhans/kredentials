@@ -388,6 +388,12 @@ namespace krb5{
 	return ctx;
     }
 
+    bool tixmgr::setDoAklog(bool val) {
+	LOG << "set doAklog ==" << val;
+	doAklog = val;
+	return doAklog;
+    }
+
     tixmgr::tixmgr(bool _doAklog):base(),doAklog(_doAklog),cc(ctx){
 	kerror=ctx.error();
 	if(!kerror)
