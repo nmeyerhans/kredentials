@@ -87,6 +87,10 @@ kredentials::kredentials(int notify, int aklog)
     connect(destroyAct, SIGNAL(triggered()), this, SLOT(destroyTickets()));
     contextMenu()->addAction(destroyAct);
 
+    config = KGlobal::config();	
+    generalConfigGroup = KConfigGroup(config, "General");
+    setDoAklog(generalConfigGroup.readEntry("RunAklog", true));
+
     hasCurrentTickets();
 	
     timer = new QTimer(this);
@@ -322,11 +326,6 @@ void kredentials::showTicketCache()
 void kredentials::setDoNotify(int state)
 {
     doNotify = state;
-}
-
-void kredentials::setDoAklog(int state)
-{
-    doAklog = state;
 }
 
 #include "kredentials.moc"

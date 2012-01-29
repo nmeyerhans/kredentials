@@ -34,6 +34,10 @@
 #include <ksystemtrayicon.h>
 #include <kuser.h>
 #include <kaction.h>
+#include <kcomponentdata.h>
+#include <kconfig.h>
+#include <kglobal.h>
+#include <kconfiggroup.h>
 
 #include <time.h>
 #include "krb5_wrap.h"
@@ -57,7 +61,6 @@ public:
      */
     virtual ~kredentials();
 	void setDoNotify(int);
-	void setDoAklog(int);
 	
 protected slots:
 	void tryRenewTickets();
@@ -74,13 +77,15 @@ private:
 	int secondsToNextRenewal;
         int renewWarningFlag;
         int renewWarningTime;
+	KSharedConfigPtr config;
+	KConfigGroup generalConfigGroup;
 
 	KUser *kerberosUser;
 	KAction *renewAct, *reInitAct, *statusAct, *destroyAct, *freshTixAct;
 	KAction *quitAct;
 	QPixmap panelIcon;
 	QTimer *timer;
-	
+
 	int doNotify;
 
 };
