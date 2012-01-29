@@ -38,6 +38,7 @@
 #include <kconfig.h>
 #include <kglobal.h>
 #include <kconfiggroup.h>
+#include <ktoggleaction.h>
 
 #include <time.h>
 #include "krb5_wrap.h"
@@ -54,7 +55,7 @@ public:
      * Default Constructor
      */
     //kredentials();
-	kredentials( int doNotify=0, int doAklog=1 );
+	kredentials( int doNotify=0 );
 	
     /**
      * Default Destructor
@@ -69,7 +70,8 @@ protected slots:
 	void tryPassGetTicketsScreenSaverSafe();
 	bool destroyTickets();
 	void ticketTimerEvent();
-	
+	void prefsAklog();
+
 protected:
 	void renewOrGetNewTicekts();
 
@@ -83,6 +85,7 @@ private:
 	KUser *kerberosUser;
 	KAction *renewAct, *reInitAct, *statusAct, *destroyAct, *freshTixAct;
 	KAction *quitAct;
+	KToggleAction *toggleAklogAct;
 	QPixmap panelIcon;
 	QTimer *timer;
 

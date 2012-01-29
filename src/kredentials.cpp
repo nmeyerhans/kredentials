@@ -57,19 +57,22 @@
 #define LOG kDebugDevNull()
 #endif /*DEBUG*/
 
-kredentials::kredentials(int notify, int aklog)
-    : KSystemTrayIcon(),tixmgr(aklog){
+kredentials::kredentials(int notify)
+    : KSystemTrayIcon(),tixmgr(){
     // set the shell's ui resource file
     //setXMLFile("kredentialsui.rc");
 
     LOG << "kredentials constructor called" << kerror;
 
     doNotify = notify;
-    doAklog  = aklog;
     renewWarningTime = DEFAULT_WARNING_INTERVAL;
     secondsToNextRenewal = DEFAULT_RENEWAL_INTERVAL;
     renewWarningFlag = 0;
     this->setIcon(this->loadIcon("kredentials"));
+
+    config = KGlobal::config();	
+    generalConfigGroup = KConfigGroup(config, "General");
+    setDoAklog(generalConfigGroup.readEntry("RunAklog", true));
 
     renewAct = new KAction(KIcon("1rightarrow"), i18n("Renew credentials"), this);
     connect(renewAct, SIGNAL(triggered()), this, SLOT(tryRenewTickets()));
@@ -87,9 +90,11 @@ kredentials::kredentials(int notify, int aklog)
     connect(destroyAct, SIGNAL(triggered()), this, SLOT(destroyTickets()));
     contextMenu()->addAction(destroyAct);
 
-    config = KGlobal::config();	
-    generalConfigGroup = KConfigGroup(config, "General");
-    setDoAklog(generalConfigGroup.readEntry("RunAklog", true));
+    toggleAklogAct = new KToggleAction(i18n("&Renew AFS tokens"), this);
+    connect(toggleAklogAct, SIGNAL(triggered()), this, SLOT(prefsAklog()));
+    toggleAklogAct->setChecked(doAklog);
+    //toggleAklogAct->slotToggled(doAklog);
+    contextMenu()->addAction(toggleAklogAct);
 
     hasCurrentTickets();
 	
@@ -106,6 +111,12 @@ kredentials::~kredentials()
 {
 }
 
+void kredentials::prefsAklog() {
+    doAklog = !doAklog;
+    KConfigGroup(config, "General").writeEntry("RunAklog", doAklog);
+    config->sync();
+    LOG << "Toggled aklog, value now"<<doAklog;
+}
 
 bool kredentials::destroyTickets(){
     bool res=FALSE;
