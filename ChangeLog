@@ -1,6 +1,8 @@
 kredentials (2.0-pre3)
 
   * Fix 'Destroy credentials', which I'd accidentally disabled.
+  * Add a toggle item to the popup menu allowing the user to
+    decide whether or not aklog should run when renewing creds.
 
  --
 
